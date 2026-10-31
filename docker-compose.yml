@@ -1,0 +1,72 @@
+# =============================================================================
+# WashPilot CI — déploiement sur une seule machine.
+#
+# Destiné à l'éditeur qui héberge quelques stations sur un petit serveur, et à
+# quiconque veut essayer l'application dans les conditions de la production
+# avant de la confier à un hébergeur.
+#
+# Deux services seulement : l'application, et sa base. La base est un service
+# à part, avec son propre volume, et c'est le point essentiel de ce fichier :
+# on peut détruire et reconstruire l'application autant qu'on veut, les
+# données ne bougent pas.
+#
+#   Démarrer :  cp .env.example .env  (puis renseigner les mots de passe)
+#               docker compose up -d
+#   Journaux :  docker compose logs -f app
+#   Arrêter  :  docker compose down          (les données sont conservées)
+#               docker compose down -v       (les données sont DÉTRUITES)
+# =============================================================================
+
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-washpilot}
+      POSTGRES_USER: ${POSTGRES_USER:-washpilot}
+      # Sans valeur dans le fichier .env, la composition refuse de démarrer :
+      # une base de production ne doit pas avoir de mot de passe par défaut.
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Définissez POSTGRES_PASSWORD dans .env}
+    volumes:
+      - washpilot-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-washpilot} -d ${POSTGRES_DB:-washpilot}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    # La base n'est pas exposée hors de la machine : seule l'application la
+    # joint, par le réseau interne de la composition.
+    expose:
+      - "5432"
+
+  app:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      db:
+        # On attend que la base réponde réellement. Sans cette condition,
+        # l'application démarrerait trop tôt et, depuis le garde-fou de
+        # déploiement, refuserait de se lancer plutôt que de repartir d'une
+        # base vide — ce qui est le bon comportement, mais évitable ici.
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      DATABASE_URL: postgres://${POSTGRES_USER:-washpilot}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-washpilot}
+      APP_URL: ${APP_URL:-}
+      CORS_ORIGINS: ${CORS_ORIGINS:-}
+      PLATFORM_ADMIN_EMAILS: ${PLATFORM_ADMIN_EMAILS:-}
+      PLATFORM_ADMIN_PASSWORD: ${PLATFORM_ADMIN_PASSWORD:-}
+      RESEND_API_KEY: ${RESEND_API_KEY:-}
+      MAIL_FROM: ${MAIL_FROM:-}
+      SUPPORT_WHATSAPP: ${SUPPORT_WHATSAPP:-}
+      SUPPORT_EMAIL: ${SUPPORT_EMAIL:-}
+      PAYMENT_MERCHANT_NUMBER: ${PAYMENT_MERCHANT_NUMBER:-}
+      PAYMENT_MERCHANT_NAME: ${PAYMENT_MERCHANT_NAME:-}
+    ports:
+      - "${APP_PORT:-3000}:3000"
+
+volumes:
+  # Nommé, donc indépendant du cycle de vie des conteneurs. C'est ici que vit
+  # l'argent des stations : c'est ce volume qu'il faut sauvegarder.
+  washpilot-data:

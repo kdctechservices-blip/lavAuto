@@ -1,0 +1,756 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --font-sans: var(--font-inter);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+:root {
+  --font-inter: "Inter", system-ui, sans-serif;
+  --radius: 0.625rem;
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  /* Status colours (not part of the shadcn base palette): positive, attention, informational */
+  --success: oklch(0.627 0.194 149.214);
+  --success-foreground: oklch(0.985 0 0);
+  --warning: oklch(0.705 0.213 47.604);
+  --warning-foreground: oklch(0.985 0 0);
+  --info: oklch(0.546 0.245 262.881);
+  --info-foreground: oklch(0.985 0 0);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
+}
+
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.205 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.922 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --success: oklch(0.792 0.209 151.711);
+  --success-foreground: oklch(0.205 0 0);
+  --warning: oklch(0.75 0.183 55.934);
+  --warning-foreground: oklch(0.205 0 0);
+  --info: oklch(0.707 0.165 254.624);
+  --info-foreground: oklch(0.205 0 0);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.556 0 0);
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.556 0 0);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground font-sans;
+    font-family: var(--font-inter);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* Ensure consistent font rendering across different DPI levels */
+@media (-webkit-min-device-pixel-ratio: 1.5), (min-resolution: 144dpi) {
+  body {
+    -webkit-font-smoothing: subpixel-antialiased;
+  }
+}
+
+/* Fix for sidebar "none" mode height issue */
+.sidebar-none-mode [data-slot="sidebar"] {
+  height: 100vh !important;
+  min-height: 100vh !important;
+}
+
+/* Fix for right-side inset variant support */
+@media (min-width: 768px) {
+  /* Right sidebar inset variant - margin adjustments */
+  [data-side="right"][data-variant="inset"] ~ [data-slot="sidebar-inset"] {
+    margin-right: 0 !important;
+  }
+
+  /* Right sidebar inset variant - collapsed state margin */
+  [data-side="right"][data-variant="inset"][data-state="collapsed"]
+    ~ [data-slot="sidebar-inset"] {
+    margin-right: 0.5rem !important;
+  }
+}
+
+/* Smooth scrolling for the entire page */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Logo carousel animation */
+@keyframes logo-scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-144rem); /* 12 items * 12rem = 144rem */
+  }
+}
+
+.animate-logo-scroll {
+  animation: logo-scroll 30s linear infinite;
+}
+
+.animate-logo-scroll:hover {
+  animation-play-state: paused;
+}
+
+/* Route progress bar (components/router/root-layout.tsx). Fades in after
+   150ms so fast navigations don't flash it. */
+@keyframes route-progress-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes route-progress-slide {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(300%); }
+}
+.route-progress {
+  animation: route-progress-in 150ms ease-out 150ms both;
+}
+.route-progress-bar {
+  animation: route-progress-slide 1.1s ease-in-out infinite;
+}
+/* ==========================================================================
+   Bibliothèque de mouvement (voir ANIMATIONS-UX.md)
+   Règle : uniquement `transform` et `opacity` — compositées par le GPU, donc
+   fluides sur les Android d'entrée de gamme.
+   ========================================================================== */
+
+/* Apparition échelonnée des lignes de liste / tableau.
+   Usage : <TableRow className="row-in" style={{ "--row": index }} /> */
+@keyframes row-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: none; }
+}
+.row-in {
+  animation: row-in 280ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: calc(var(--row, 0) * 28ms);
+}
+
+/* Surlignage temporaire d'une ligne qui vient d'être créée. */
+@keyframes row-flash {
+  0%   { background-color: color-mix(in oklch, var(--color-primary) 18%, transparent); }
+  100% { background-color: transparent; }
+}
+.row-flash {
+  animation: row-flash 1400ms ease-out both;
+}
+
+/* Respiration lente : badge d'état actif (caisse ouverte). */
+@keyframes pulse-soft {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.55; }
+}
+.pulse-soft { animation: pulse-soft 2.2s ease-in-out infinite; }
+
+/* Flottement discret : illustrations d'états vides. */
+@keyframes float-soft {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-5px); }
+}
+.float-soft { animation: float-soft 3.6s ease-in-out infinite; }
+
+/* Secousse courte : écart de caisse important, erreur de saisie. */
+@keyframes shake-x {
+  0%, 100% { transform: translateX(0); }
+  20%      { transform: translateX(-5px); }
+  40%      { transform: translateX(5px); }
+  60%      { transform: translateX(-3px); }
+  80%      { transform: translateX(3px); }
+}
+.shake-x { animation: shake-x 340ms ease-in-out 1; }
+
+/* Dégradé animé (sections vitrine) : déplace le fond, pas la géométrie. */
+@keyframes gradient-pan {
+  0%, 100% { background-position: 0% 50%; }
+  50%      { background-position: 100% 50%; }
+}
+.gradient-pan {
+  background-size: 220% 220%;
+  animation: gradient-pan 16s ease-in-out infinite;
+}
+
+/* Célébration de fin d'onboarding (une seule fois, ~1,4 s). */
+@keyframes confetti-fall {
+  0%   { opacity: 0; transform: translate3d(0, -10px, 0) rotate(0deg); }
+  10%  { opacity: 1; }
+  100% { opacity: 0; transform: translate3d(var(--dx, 0), 320px, 0) rotate(var(--spin, 360deg)); }
+}
+.confetti-piece {
+  animation: confetti-fall 1400ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: var(--delay, 0ms);
+}
+
+/* Barre de progression de l'assistant : scaleX, jamais width. */
+.progress-fill {
+  transform-origin: left center;
+  transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ==========================================================================
+   Transitions de page (API View Transitions, pilotée par React Router)
+   ========================================================================== */
+@keyframes vt-fade-in  { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+@keyframes vt-fade-out { from { opacity: 1; } to { opacity: 0; } }
+
+::view-transition-old(root) { animation: vt-fade-out 110ms ease-in both; }
+::view-transition-new(root) { animation: vt-fade-in 220ms ease-out both; }
+
+/* Bascule de thème : révélation circulaire à partir du clic
+   (hooks/use-circular-transition.ts pose --x / --y et l'attribut ci-dessous). */
+@keyframes theme-reveal {
+  from { clip-path: circle(0% at var(--x, 50%) var(--y, 50%)); }
+  to   { clip-path: circle(150% at var(--x, 50%) var(--y, 50%)); }
+}
+html[data-theme-transition]::view-transition-old(root) {
+  animation: none;
+}
+html[data-theme-transition]::view-transition-new(root) {
+  animation: theme-reveal 480ms ease-out both;
+  mix-blend-mode: normal;
+  z-index: 1;
+}
+
+/* ==========================================================================
+   Élévations 3D et ombres de bordure (voir ANIMATIONS-UX.md §7)
+
+   Une élévation n'est pas une seule ombre : c'est une lumière zénithale.
+   Chaque niveau empile quatre couches, du plus proche au plus lointain :
+     1. biseau haut    — liseré clair sur la bordure supérieure (la lumière)
+     2. biseau bas     — liseré sombre sur la bordure inférieure (le contact)
+     3. liseré         — contour d'1 px qui détache la surface du fond
+     4. ombre portée   — diffusion ambiante + ombre directionnelle
+   Les couches 1 et 2 donnent le relief sur la bordure ; la 4 donne la hauteur.
+   ========================================================================== */
+:root {
+  /* Biseaux : la lumière vient d'en haut, donc le haut s'éclaire et le bas
+     s'assombrit.
+
+     Alpha explicite plutôt que `color-mix(… var(--foreground) …)` : quand le
+     navigateur ne connaît pas `color-mix`, le compilateur CSS replie sur la
+     couleur *opaque*, ce qui donnerait des pavés noirs au lieu d'ombres. Une
+     ombre est noire dans les deux thèmes de toute façon — la dériver du texte
+     n'apportait rien et coûtait ce repli. */
+  --edge-light: inset 0 1px 0 0 oklch(1 0 0 / 0.75);
+  --edge-shade: inset 0 -1px 0 0 oklch(0 0 0 / 0.07);
+  --edge-ring: 0 0 0 1px oklch(0 0 0 / 0.09);
+  --edge-ring-strong: 0 0 0 1px oklch(0 0 0 / 0.14);
+
+  /* Hauteurs. Les décalages restent faibles : une station se consulte en plein
+     soleil sur un téléphone, les ombres trop larges y deviennent du bruit gris. */
+  --elev-1: 0 1px 2px -1px oklch(0 0 0 / 0.1), 0 2px 6px -2px oklch(0 0 0 / 0.08);
+  --elev-2: 0 2px 4px -2px oklch(0 0 0 / 0.12), 0 6px 14px -4px oklch(0 0 0 / 0.12);
+  --elev-3: 0 4px 8px -3px oklch(0 0 0 / 0.14), 0 14px 28px -8px oklch(0 0 0 / 0.16);
+  --elev-4: 0 8px 16px -6px oklch(0 0 0 / 0.16), 0 26px 50px -12px oklch(0 0 0 / 0.22);
+}
+
+.dark {
+  /* En thème sombre, un biseau blanc à 75 % ferait une arête fluorescente.
+     On baisse la lumière et on creuse les ombres, qui portent moins sur fond noir. */
+  --edge-light: inset 0 1px 0 0 oklch(1 0 0 / 0.1);
+  --edge-shade: inset 0 -1px 0 0 oklch(0 0 0 / 0.3);
+  --edge-ring: 0 0 0 1px oklch(1 0 0 / 0.09);
+  --edge-ring-strong: 0 0 0 1px oklch(1 0 0 / 0.16);
+  --elev-1: 0 1px 2px -1px oklch(0 0 0 / 0.5), 0 2px 6px -2px oklch(0 0 0 / 0.4);
+  --elev-2: 0 2px 4px -2px oklch(0 0 0 / 0.55), 0 6px 14px -4px oklch(0 0 0 / 0.45);
+  --elev-3: 0 4px 8px -3px oklch(0 0 0 / 0.6), 0 14px 28px -8px oklch(0 0 0 / 0.5);
+  --elev-4: 0 8px 16px -6px oklch(0 0 0 / 0.65), 0 26px 50px -12px oklch(0 0 0 / 0.55);
+}
+
+/* Surfaces statiques : relief sur la bordure, sans interaction. */
+.elev-1 { box-shadow: var(--edge-light), var(--edge-shade), var(--edge-ring), var(--elev-1); }
+.elev-2 { box-shadow: var(--edge-light), var(--edge-shade), var(--edge-ring), var(--elev-2); }
+.elev-3 { box-shadow: var(--edge-light), var(--edge-shade), var(--edge-ring-strong), var(--elev-3); }
+.elev-4 { box-shadow: var(--edge-light), var(--edge-shade), var(--edge-ring-strong), var(--elev-4); }
+
+/* Relief seul, sans ombre portée : pour les éléments posés à plat
+   (en-têtes de tableau, champs, segments) qui ne doivent pas décoller. */
+.edge-3d { box-shadow: var(--edge-light), var(--edge-shade), var(--edge-ring); }
+
+/* --------------------------------------------------------------------------
+   Surface interactive : la carte monte au survol.
+
+   `box-shadow` n'est pas compositée par le GPU — l'animer fait recalculer le
+   flou à chaque image. On superpose donc l'ombre haute sur un pseudo-élément
+   et on ne fait varier que son `opacity`. Seuls `transform` et `opacity`
+   bougent réellement, la règle de la bibliothèque de mouvement est tenue.
+   -------------------------------------------------------------------------- */
+.surface-3d {
+  position: relative;
+  box-shadow: var(--edge-light), var(--edge-shade), var(--edge-ring), var(--elev-1);
+  transition: transform 140ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.surface-3d::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow: var(--edge-light), var(--edge-shade), var(--edge-ring-strong), var(--elev-3);
+  opacity: 0;
+  transition: opacity 140ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* `focus-within` autant que `hover` : au clavier, le relief doit suivre le focus. */
+.surface-3d:hover::after,
+.surface-3d:focus-within::after { opacity: 1; }
+
+.surface-3d:hover { transform: translateY(-2px); }
+.surface-3d:active { transform: translateY(0); }
+
+/* Le contenu doit passer au-dessus du pseudo-élément d'ombre. */
+.surface-3d > * { position: relative; z-index: 1; }
+
+/* Surface pressable (tuile d'action rapide) : s'enfonce légèrement au clic. */
+.surface-press:active { transform: translateY(0) scale(0.99); }
+
+/* --------------------------------------------------------------------------
+   Lueurs colorées sur la bordure : signalent un état, jamais une décoration.
+   Posées sur le pseudo-élément, elles profitent du même fondu d'opacité.
+   -------------------------------------------------------------------------- */
+.glow-primary::after {
+  box-shadow: var(--edge-light), var(--edge-shade),
+    0 0 0 1px color-mix(in oklch, var(--color-primary) 40%, transparent),
+    0 4px 10px -4px color-mix(in oklch, var(--color-primary) 30%, transparent),
+    0 16px 32px -12px color-mix(in oklch, var(--color-primary) 35%, transparent);
+}
+.glow-success::after {
+  box-shadow: var(--edge-light), var(--edge-shade),
+    0 0 0 1px color-mix(in oklch, var(--color-success) 45%, transparent),
+    0 4px 10px -4px color-mix(in oklch, var(--color-success) 30%, transparent),
+    0 16px 32px -12px color-mix(in oklch, var(--color-success) 35%, transparent);
+}
+.glow-warning::after {
+  box-shadow: var(--edge-light), var(--edge-shade),
+    0 0 0 1px color-mix(in oklch, var(--color-warning) 45%, transparent),
+    0 4px 10px -4px color-mix(in oklch, var(--color-warning) 30%, transparent),
+    0 16px 32px -12px color-mix(in oklch, var(--color-warning) 35%, transparent);
+}
+.glow-danger::after {
+  box-shadow: var(--edge-light), var(--edge-shade),
+    0 0 0 1px color-mix(in oklch, var(--color-destructive) 45%, transparent),
+    0 4px 10px -4px color-mix(in oklch, var(--color-destructive) 30%, transparent),
+    0 16px 32px -12px color-mix(in oklch, var(--color-destructive) 35%, transparent);
+}
+
+/* Lueur permanente, sans survol : attire l'œil sur un état durable
+   (caisse ouverte, essai qui expire, écart de comptage). */
+.glow-static { box-shadow: var(--edge-light), var(--edge-shade), var(--edge-ring), var(--elev-1); }
+.glow-static.glow-primary { box-shadow: var(--edge-ring), 0 0 0 1px color-mix(in oklch, var(--color-primary) 35%, transparent), 0 8px 22px -10px color-mix(in oklch, var(--color-primary) 40%, transparent); }
+.glow-static.glow-success { box-shadow: var(--edge-ring), 0 0 0 1px color-mix(in oklch, var(--color-success) 40%, transparent), 0 8px 22px -10px color-mix(in oklch, var(--color-success) 40%, transparent); }
+.glow-static.glow-warning { box-shadow: var(--edge-ring), 0 0 0 1px color-mix(in oklch, var(--color-warning) 40%, transparent), 0 8px 22px -10px color-mix(in oklch, var(--color-warning) 40%, transparent); }
+.glow-static.glow-danger  { box-shadow: var(--edge-ring), 0 0 0 1px color-mix(in oklch, var(--color-destructive) 40%, transparent), 0 8px 22px -10px color-mix(in oklch, var(--color-destructive) 40%, transparent); }
+
+/* Halo qui respire : réservé à une alerte qui doit être vue (écart de caisse). */
+@keyframes glow-breathe {
+  0%, 100% { opacity: 0.55; }
+  50%      { opacity: 1; }
+}
+.glow-breathe::after { opacity: 0.55; animation: glow-breathe 2.4s ease-in-out infinite; }
+
+/* --------------------------------------------------------------------------
+   Perspective 3D partagée. `preserve-3d` ne se transmet pas aux descendants
+   d'un élément qui crée un contexte d'empilement : on pose la perspective sur
+   le conteneur, l'enfant s'incline dedans.
+   -------------------------------------------------------------------------- */
+.scene-3d { perspective: 1000px; perspective-origin: 50% 50%; }
+.layer-3d { transform-style: preserve-3d; will-change: transform; }
+
+/* Sous 768 px, l'inclinaison au pointeur n'a pas de sens (pas de curseur) et
+   coûte des images sur les téléphones d'entrée de gamme. */
+@media (max-width: 767px) {
+  .scene-3d { perspective: none; }
+  .layer-3d { transform: none !important; }
+}
+
+/* --------------------------------------------------------------------------
+   Micro-interactions globales : feedback tactile cohérent sur les surfaces.
+   Les états restent basés sur transform/opacity pour préserver la fluidité.
+   -------------------------------------------------------------------------- */
+.interactive-scale {
+  transition: transform 160ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 160ms ease, border-color 160ms ease, background-color 160ms ease;
+}
+.interactive-scale:hover { transform: translateY(-2px) scale(1.01); }
+.interactive-scale:active { transform: translateY(0) scale(0.985); }
+
+.color-surface {
+  background: linear-gradient(135deg, color-mix(in oklch, var(--color-primary) 9%, var(--color-card)), var(--color-card));
+  border-color: color-mix(in oklch, var(--color-primary) 22%, var(--color-border));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+  .interactive-scale:hover,
+  .surface-3d:hover { transform: none; }
+}
+
+/* ==========================================================================
+   Surfaces verrouillées en clair (vitrine et authentification)
+
+   La page vitrine et les écrans de connexion portent une identité de marque
+   fixe : bleu profond sur blanc, sans variante sombre. Ce choix est assumé —
+   mais `<html class="dark">` fait quand même basculer les variables
+   d'élévation et `color-scheme`, ce qui donnerait des ombres taillées pour
+   le sombre sous des cartes blanches, et des contrôles de formulaire noirs
+   dans un formulaire blanc.
+
+   Cette classe réaffirme les valeurs claires sur le sous-arbre concerné.
+   Elle disparaîtra le jour où la vitrine gagnera une vraie version sombre.
+   ========================================================================== */
+.light-surface {
+  color-scheme: light;
+  --edge-light: inset 0 1px 0 0 oklch(1 0 0 / 0.75);
+  --edge-shade: inset 0 -1px 0 0 oklch(0 0 0 / 0.07);
+  --edge-ring: 0 0 0 1px oklch(0 0 0 / 0.09);
+  --edge-ring-strong: 0 0 0 1px oklch(0 0 0 / 0.14);
+  --elev-1: 0 1px 2px -1px oklch(0 0 0 / 0.1), 0 2px 6px -2px oklch(0 0 0 / 0.08);
+  --elev-2: 0 2px 4px -2px oklch(0 0 0 / 0.12), 0 6px 14px -4px oklch(0 0 0 / 0.12);
+  --elev-3: 0 4px 8px -3px oklch(0 0 0 / 0.14), 0 14px 28px -8px oklch(0 0 0 / 0.16);
+  --elev-4: 0 8px 16px -6px oklch(0 0 0 / 0.16), 0 26px 50px -12px oklch(0 0 0 / 0.22);
+}
+
+/* ==========================================================================
+   Accessibilité : une seule garde pour tout le mouvement de l'application.
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .route-progress-bar { animation: none; width: 100%; opacity: 0.6; }
+
+  /* Les élévations restent — ce sont des repères de hiérarchie, pas du
+     mouvement. Seuls le décollement et la respiration sont supprimés. */
+  .surface-3d:hover,
+  .surface-3d:active,
+  .surface-press:active { transform: none; }
+  .glow-breathe::after { animation: none; opacity: 1; }
+  .layer-3d { transform: none !important; }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none !important;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Reçu thermique 80 mm
+   ---------------------------------------------------------------------------
+   Impression par le navigateur plutôt que par un pilote ESC/POS : aucune
+   dépendance supplémentaire, et la même page sort correctement d'une
+   imprimante de comptoir USB, d'un modèle Bluetooth Android ou d'un PDF.
+
+   La règle `visibility` plutôt que `display` est délibérée : masquer par
+   `display:none` casse la mise en page des ancêtres du reçu (il vit dans un
+   portail de dialogue), alors que `visibility:hidden` conserve l'arbre et
+   n'imprime rien. Le reçu est ensuite sorti du flux et collé en haut à
+   gauche de la page.
+
+   80 mm de papier = 72 mm imprimables sur la quasi-totalité des modèles. Le
+   reste est la marge mécanique du chariot ; écrire dedans fait disparaître
+   le bord droit des montants.
+--------------------------------------------------------------------------- */
+@media print {
+  body * {
+    visibility: hidden !important;
+  }
+
+  #recu-impression,
+  #recu-impression * {
+    visibility: visible !important;
+  }
+
+  #recu-impression {
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 72mm !important;
+    max-width: 72mm !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    background: #fff !important;
+    color: #000 !important;
+  }
+
+  /* Une imprimante thermique ne connaît que le noir : tout aplat gris sort
+     en bavure et mange le papier. */
+  #recu-impression * {
+    background: transparent !important;
+    color: #000 !important;
+    box-shadow: none !important;
+  }
+
+  #recu-impression .recu-separateur {
+    border-top: 1px dashed #000 !important;
+  }
+}
+
+@page {
+  size: 80mm auto;
+  margin: 3mm;
+}
+
+/* ---------------------------------------------------------------------------
+   Accessibilité et confort tactile
+   ---------------------------------------------------------------------------
+   Trois règles transversales, écrites une fois pour toute l'application :
+
+   1. **Focus clavier toujours visible.** Le contour natif disparaît sur fond
+      coloré et sur les éléments stylés ; on impose un anneau à fort contraste,
+      avec un décalage qui le détache du composant.
+   2. **Cibles tactiles d'au moins 44 px.** Uniquement sur les pointeurs
+      grossiers : à la souris, un bouton de 28 px reste confortable et dense,
+      mais au doigt il devient une devinette.
+   3. **Contenu sous la barre d'actions mobile.** La barre fixe mesure environ
+      4 rem ; sans réserve, elle recouvre la dernière ligne d'un tableau.
+--------------------------------------------------------------------------- */
+
+:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+/* Les champs gèrent déjà leur anneau : pas de double contour. */
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+[data-slot="toggle"]:focus-visible,
+[role="combobox"]:focus-visible {
+  outline: none;
+}
+
+@media (pointer: coarse) {
+  [data-slot="button"],
+  button:not([data-slot="toast-close"]),
+  [role="button"],
+  [role="tab"],
+  [role="menuitem"],
+  [role="option"] {
+    min-height: 44px;
+  }
+
+  [data-slot="button"][data-size="icon"],
+  [data-slot="button"][data-size="icon-sm"],
+  [data-slot="button"][data-size="icon-xs"],
+  [data-slot="button"][data-size="icon-lg"] {
+    min-width: 44px;
+  }
+
+  a[data-slot="button"] {
+    min-height: 44px;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Tableaux → cartes sur petit écran
+   ---------------------------------------------------------------------------
+   Le tableau reste un vrai `<table>` (en-têtes, `aria-sort`, scope) sur
+   desktop. Sous 768 px, chaque ligne devient une carte : le libellé de la
+   colonne est repris via `data-label`, la valeur reste alignée à droite.
+   Aucun composant dupliqué, aucune donnée masquée.
+--------------------------------------------------------------------------- */
+@media (max-width: 767px) {
+  .table-cards [data-slot="table-container"] {
+    overflow-x: visible;
+  }
+
+  .table-cards table,
+  .table-cards thead,
+  .table-cards tbody,
+  .table-cards tr,
+  .table-cards th,
+  .table-cards td {
+    display: block;
+    width: 100%;
+  }
+
+  .table-cards thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .table-cards tbody {
+    padding: 0.75rem;
+  }
+
+  .table-cards tbody tr {
+    margin-bottom: 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: calc(var(--radius) + 4px);
+    background: var(--card);
+    padding: 0.25rem 0.75rem;
+    box-shadow: var(--elev-1, 0 1px 2px rgb(0 0 0 / 0.05));
+  }
+
+  .table-cards tbody tr:last-child {
+    margin-bottom: 0;
+  }
+
+  .table-cards tbody td {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    min-height: 44px;
+    padding: 0.5rem 0;
+    border: 0;
+    text-align: right;
+  }
+
+  .table-cards tbody td + td {
+    border-top: 1px dashed color-mix(in oklch, var(--border), transparent 30%);
+  }
+
+  .table-cards tbody td::before {
+    content: attr(data-label);
+    flex: 0 0 auto;
+    max-width: 45%;
+    text-align: left;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--muted-foreground);
+    white-space: normal;
+  }
+
+  .table-cards tbody td[data-label=""]::before,
+  .table-cards tbody td:not([data-label])::before {
+    content: none;
+  }
+
+  .table-cards tbody td:empty {
+    display: none;
+  }
+
+  /* Cellules d'état (vide, erreur) ou de détail déplié : elles occupent toute
+     la largeur et ne portent pas de libellé de colonne. */
+  .table-cards tbody td[colspan] {
+    display: block;
+    text-align: left;
+    padding: 0.25rem;
+  }
+}
+
+/* Zone de sécurité iOS pour toute barre fixe en bas. */
+.pb-safe {
+  padding-bottom: max(1rem, env(safe-area-inset-bottom));
+}

@@ -1,0 +1,51 @@
+# Environnement / secrets — ne jamais committer
+.env
+.env.local
+.env.*.local
+backend/.env
+
+# Dépendances
+node_modules/
+.pnp
+.pnp.*
+
+# Build frontend
+dist/
+dist-ssr/
+*.local
+
+# Binaire backend Go
+backend/server
+backend/*.exe
+backend/bin/
+
+# Logs / OS / éditeurs
+*.log
+.DS_Store
+.vscode/*
+# Le serveur MCP de Neon ne contient qu'une URL (aucune clé : l'agent demande
+# la connexion à l'ouverture). Il est partagé avec l'équipe, contrairement au
+# reste des réglages locaux de VS Code.
+!.vscode/mcp.json
+.idea/
+
+# Vite / TS
+*.tsbuildinfo
+node_modules/.tmp/
+node_modules/.vite/
+
+# QA temporaire
+qa-signup.mjs
+
+# Sauvegardes locales produites par scripts/db-backup.sh
+backups/
+*.dump
+
+# Base PostgreSQL embarquee (PGlite) persistee sur disque
+.data/
+
+# Outil de génération des visuels de marque (Python)
+__pycache__/
+
+# Artefact des fonctions serverless (généré par npm run build:api)
+server/vercel-bundle.js

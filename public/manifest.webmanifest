@@ -1,0 +1,64 @@
+{
+  "name": "WashPilot CI — Gestion de station de lavage",
+  "short_name": "WashPilot",
+  "description": "Enregistrez vos lavages, vos encaissements et votre équipe, même sans réseau.",
+  "lang": "fr-CI",
+  "dir": "ltr",
+  "start_url": "/washes",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#ffffff",
+  "theme_color": "#102342",
+  "categories": [
+    "business",
+    "finance",
+    "productivity"
+  ],
+  "icons": [
+    {
+      "src": "/brand/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/brand/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/brand/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Enregistrer un lavage",
+      "short_name": "Lavage",
+      "description": "Enregistrer un lavage et son encaissement",
+      "url": "/washes",
+      "icons": [
+        {
+          "src": "/brand/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Caisse",
+      "short_name": "Caisse",
+      "description": "Ouvrir, alimenter ou compter la caisse",
+      "url": "/cash-drawer",
+      "icons": [
+        {
+          "src": "/brand/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ]
+}

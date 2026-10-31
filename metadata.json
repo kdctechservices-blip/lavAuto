@@ -1,0 +1,8 @@
+{
+  "name": "WashPilot CI",
+  "description": "Gestion de station de lavage : suivi des lavages, encaissements et équipe en Côte d'Ivoire.",
+  "permissions": [],
+  "capabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

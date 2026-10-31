@@ -1,0 +1,20 @@
+# Ce qui ne doit jamais entrer dans l'image.
+#
+# `.env` en tête : un secret recopié dans une image se retrouve dans chaque
+# registre, chaque sauvegarde et chaque machine qui la télécharge. Les
+# variables s'injectent au démarrage, jamais à la construction.
+.env
+.env.*
+!.env.example
+
+node_modules
+dist
+.data
+.git
+.github
+*.log
+
+# Tests et documentation : utiles au dépôt, inutiles au serveur.
+tests
+*.md
+!README.md

@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="fr-CI">
+  <head>
+    <meta charset="UTF-8" />
+    <!--
+      Favicons. La variante sombre existe parce que l'emblème contient des
+      traits argentés : sur l'onglet d'un navigateur en thème sombre, la
+      version claire se réduirait à une tache illisible.
+    -->
+    <link rel="icon" href="/brand/icon-32.png" type="image/png" sizes="32x32" />
+    <link
+      rel="icon"
+      href="/brand/icon-32-dark.png"
+      type="image/png"
+      sizes="32x32"
+      media="(prefers-color-scheme: dark)"
+    />
+    <link rel="apple-touch-icon" href="/brand/icon-180.png" sizes="180x180" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!--
+      Application installable. Un gérant peut poser WashPilot sur l'écran
+      d'accueil de son téléphone et l'ouvrir sans passer par le navigateur —
+      y compris quand le réseau est tombé.
+    -->
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="WashPilot" />
+    <meta name="theme-color" content="#ffffff" />
+
+    <!--
+      Thème appliqué AVANT le premier rendu.
+
+      Sans ce script, React ne pose la classe qu'au premier effet : un
+      utilisateur en thème sombre voit un éclair blanc à chaque chargement.
+      Le code est volontairement dupliqué depuis `src/lib/theme.ts` — il doit
+      s'exécuter avant tout module, donc il ne peut rien importer. La clé de
+      stockage doit rester identique dans les deux fichiers.
+    -->
+    <script>
+      (function () {
+        try {
+          var stored = window.localStorage.getItem("vite-ui-theme")
+          var theme = stored === "light" || stored === "dark" ? stored : null
+          var resolved =
+            theme ||
+            (window.matchMedia("(prefers-color-scheme: dark)").matches
+              ? "dark"
+              : "light")
+          var root = document.documentElement
+          root.classList.add(resolved)
+          root.style.colorScheme = resolved
+          var meta = document.querySelector('meta[name="theme-color"]')
+          if (meta) meta.content = resolved === "dark" ? "#0a0a0a" : "#ffffff"
+        } catch (error) {
+          /* Stockage indisponible : on garde le thème clair par défaut. */
+        }
+      })()
+    </script>
+
+    <!-- Primary Meta Tags -->
+    <title>WashPilot CI — Gestion de station de lavage</title>
+    <meta name="title" content="WashPilot CI — Gestion de station de lavage" />
+    <meta
+      name="description"
+      content="WashPilot CI aide les stations de lavage à suivre leurs lavages, leurs encaissements et leur équipe."
+    />
+
+    <!-- Canonical (points to the main template URL) -->
+    <link rel="canonical" href="https://washpilot.ci/" />
+
+    <!-- Open Graph / Facebook / LinkedIn -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="WashPilot CI" />
+    <meta property="og:title" content="WashPilot CI — Gestion de station de lavage" />
+    <meta
+      property="og:description"
+      content="WashPilot CI aide les stations de lavage à suivre leurs lavages, leurs encaissements et leur équipe."
+    />
+    <meta property="og:url" content="https://washpilot.ci/" />
+    <!-- Use an absolute URL so scrapers can fetch the image reliably -->
+    <meta property="og:image" content="/og-image.png" />
+    <meta
+      property="og:image:alt"
+      content="Aperçu de WashPilot CI"
+    />
+    <!-- Optional: dimensions (leave generic if not exact) -->
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="WashPilot CI — Gestion de station de lavage" />
+    <meta
+      name="twitter:description"
+      content="WashPilot CI aide les stations de lavage à suivre leurs lavages, leurs encaissements et leur équipe."
+    />
+    <meta name="twitter:image" content="/og-image.png" />
+    <meta
+      name="twitter:image:alt"
+      content="Aperçu de WashPilot CI"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
