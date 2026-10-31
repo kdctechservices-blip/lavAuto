@@ -46,7 +46,7 @@
 | **Frontend** | React, Vite, TypeScript, Tailwind CSS 4, shadcn/ui, React Router 7, Recharts, Framer Motion, React Hook Form + Zod | React 19.3, Vite 8.3, TS 6.0 |
 | **Backend** | Express, `tsx` (exécution TS directe) | Express 5.3 |
 | **Auth** | Maison : `scrypt` (Node natif), sessions `httpOnly` en PostgreSQL | — |
-| **DB** | PostgreSQL (Neon) ; fallback **PGlite** (`@electric-sql/pglite`) si `DATABASE_URL` vide en dev/test | pg 8.23 |
+| **DB** | PostgreSQL Supabase ; fallback **PGlite** (`@electric-sql/pglite`) si `DATABASE_URL` vide en dev/test | pg 8.23 |
 | **State client** | Zustand 5, `useApi` (fetch + `AbortController`) | — |
 | **Lint/Build** | ESLint + typescript-eslint, `tsc -b`, `vite build` | — |
 | **Tests** | `tsx --test` + `node:test` (zod validators, idempotence, rapports) | 28 tests |
@@ -83,7 +83,7 @@ tests/               # 3 fichiers : idempotency, reports, validators
 | Table | Rôle | Notes |
 |---|---|---|
 | `users` | Comptes connexion | `password_hash` scrypt, `organization_id` (legacy), `lower(email)` unique |
-| `organizations` | Tenant racine | `onboarding_completed`, `clerk_*` résidus migration |
+| `organizations` | Tenant racine | `onboarding_completed` |
 | `organization_members` | Liaison user ↔ org + rôle | `role` ∈ `owner/manager/cashier`, UNIQUE(user,org) |
 | `plans` | Forfaits (free/pro/business) | `max_users/workers/sites/services`, `features jsonb`, seed au démarrage |
 | `subscriptions` | Abonnement org → plan | `status` (trialing/active…) |
@@ -113,7 +113,7 @@ tests/               # 3 fichiers : idempotency, reports, validators
 - **Schéma idempotent** : `CREATE TABLE/INDEX IF NOT EXISTS`, `ADD COLUMN IF NOT EXISTS` — redémarrages sans migration.
 - **Seed démo** : si aucun utilisateur `demo@washpilot.ci` n'existe, crée org + user (`WashPilot2026!`), site, 5 prestations, 3 travailleurs, 2 lavages d'exemple, une session de caisse ouverte. Utile pour la démo, mais **à désactiver/conditionner en prod**.
 - **PGlite fallback** : si `DATABASE_URL` vide en dev, utilise une base en mémoire. Pratique, mais attention aux divergences SQL (ex: `gen_random_uuid()`).
-- **Résidus Clerk** : colonnes `clerk_user_id`, `clerk_org_id`, table `clerk_webhook_events` — héritage d'une ancienne intégration, inutiles aujourd'hui.
+- Les identifiants et tables de fournisseurs d’authentification abandonnés ne sont pas dans la nouvelle baseline Supabase.
 
 ---
 

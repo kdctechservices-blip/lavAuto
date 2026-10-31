@@ -107,7 +107,7 @@ L'image se construit et se lance sans la composition :
 docker build -t washpilot-ci .
 docker run -d --name washpilot \
   -e NODE_ENV=production \
-  -e DATABASE_URL="postgres://…" \
+  -e DATABASE_URL="postgresql://postgres.<ref>:<mot-de-passe>@<hôte-pooler-session>:5432/postgres" \
   -e APP_URL="https://app.exemple.ci" \
   -e CORS_ORIGINS="https://app.exemple.ci" \
   -p 3000:3000 washpilot-ci
@@ -125,15 +125,22 @@ L'image écoute sur le port 3000 et ne tourne pas en administrateur.
 Un répartiteur doit interroger **`/readyz`**. `/healthz` répondrait « tout va
 bien » pour un serveur incapable de servir une seule page.
 
-### Le schéma se crée tout seul
+### Migrations Supabase obligatoires
 
-Au démarrage, l'application crée les tables manquantes et ajoute les colonnes
-nouvelles. Il n'y a pas d'étape de migration à lancer à la main, et une mise à
-jour ne demande rien de particulier : on remplace l'image, on redémarre.
+Le schéma distant est versionné dans `supabase/migrations/`. L'API ne crée et
+ne modifie plus les tables distantes au démarrage. Avant le premier déploiement
+(et avant chaque mise à jour qui change le schéma), appliquer les migrations :
 
-Corollaire à connaître : **deux versions différentes ne doivent pas démarrer
-en même temps sur la même base.** Lors d'un déploiement progressif, laissez
-l'ancienne version s'arrêter avant de lancer la nouvelle.
+```bash
+supabase link --project-ref <project-ref>
+supabase db push
+```
+
+Le démarrage vérifie les tables essentielles et refuse de servir l'application
+si la baseline n'a pas été appliquée. Le schéma PGlite local des tests est
+initialisé séparément. Les migrations déjà appliquées à un environnement
+partagé sont immuables : ajouter une nouvelle migration plutôt que réécrire
+l'historique.
 
 ---
 
@@ -193,7 +200,7 @@ Dans *Settings → Environment Variables* (cocher **Production** et
 
 | Variable | Valeur |
 | --- | --- |
-| `DATABASE_URL` | la chaîne `postgres://…` fournie par Neon (ajouter `?sslmode=require`) |
+| `DATABASE_URL` | la chaîne PostgreSQL de Supabase (connexion directe ou pooler session) (ajouter `?sslmode=require`) |
 | `APP_URL` | `https://<projet>.vercel.app` |
 | `CORS_ORIGINS` | la même adresse |
 | `PLATFORM_ADMIN_EMAILS` | adresses des opérateurs de la console |

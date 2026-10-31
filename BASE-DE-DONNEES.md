@@ -133,7 +133,7 @@ sans justification.
 | Table | Situation | Décision |
 | --- | --- | --- |
 | `customers` | Jamais alimentée ; `washes.customer_id` jamais renseigné | Tranché le 21 octobre : on suit le véhicule (plaque), pas la personne. Le nom du client reste une mention libre sur le lavage (`washes.customer_name`), affichée sur le reçu |
-| `clerk_webhook_events` | Vestige d'une authentification Clerk abandonnée | Suppression à planifier (aucun autre code ne la cite) |
+| Schéma Supabase | Créé et versionné par `supabase/migrations/` | Modifications uniquement par migrations ; l'API vérifie le schéma au démarrage |
 
 ## Comment vérifier soi-même
 

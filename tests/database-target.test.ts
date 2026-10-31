@@ -105,23 +105,6 @@ test("le pooler Supabase en mode transaction avertit sans bloquer", () => {
   assert.match(profile.warning ?? "", /SET ROLE/)
 })
 
-test("le pooler Neon (-pooler.) est reconnu comme transaction", () => {
-  const profile = describeConnection(
-    "postgresql://u:p@ep-gentle-1-pooler.eu-central-1.aws.neon.tech/washpilot?sslmode=require",
-  )
-  assert.equal(profile.mode, "transaction-pooler")
-  assert.equal(profile.sessionStateSurvives, false)
-  assert.match(profile.warning ?? "", /-pooler/)
-})
-
-test("l'hôte direct de Neon n'est pas confondu avec son pooler", () => {
-  const profile = describeConnection(
-    "postgresql://u:p@ep-gentle-1.eu-central-1.aws.neon.tech/washpilot?sslmode=require",
-  )
-  assert.equal(profile.mode, "direct")
-  assert.equal(profile.sessionStateSurvives, true)
-})
-
 test("un port 6543 inconnu est traité comme un pooler transaction", () => {
   assert.equal(describeConnection("postgres://u:p@pg.exemple.com:6543/db").mode, "transaction-pooler")
 })

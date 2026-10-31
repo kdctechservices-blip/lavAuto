@@ -27,7 +27,7 @@ Le plan vise `Colorado225/ubiquitous-doodle`. Le projet réel est `Colorado225/L
 
 ### 2.2 Ce n'est pas la bonne technologie
 
-Le plan décrit une authentification Clerk, une base Neon, un accès aux données Prisma
+Le plan décrit une authentification Clerk, une base PostgreSQL managée, un accès aux données Prisma
 et un service Go. **Aucun de ces quatre éléments n'existe ici.** Vérification faite
 sur les dépendances déclarées et sur l'arborescence :
 
@@ -35,7 +35,7 @@ sur les dépendances déclarées et sur l'arborescence :
 |---|---|
 | Clerk (identité) | absent — session maison, cookie signé |
 | Prisma (accès données) | absent — SQL écrit à la main |
-| Neon (hébergement base) | absent — PostgreSQL standard, repli local pour le développement |
+| Supabase (hébergement base) | utilisé — PostgreSQL managé, avec PGlite local pour les tests |
 | Service Go | absent — aucun fichier Go dans le dépôt |
 | Dossier `backend/` | absent — le serveur est dans `server/` |
 

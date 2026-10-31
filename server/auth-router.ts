@@ -461,10 +461,7 @@ export function createAuthRouter() {
         "UPDATE users SET password_hash = $2, updated_at = NOW() WHERE id = $1",
         [session.userId, newHash],
       );
-      // Invalide les autres sessions de l'utilisateur par précaution. Le
-      // cast en texte est nécessaire : une session ouverte par jeton Neon
-      // Auth n'a pas d'identifiant UUID (`neon-auth:<sub>`), et comparer
-      // directement à la colonne `uuid` ferait échouer la requête.
+      // Invalide les autres sessions de l'utilisateur par précaution.
       await pool.query(
         "DELETE FROM auth_sessions WHERE user_id = $1 AND id::text <> $2",
         [session.userId, session.sessionId],

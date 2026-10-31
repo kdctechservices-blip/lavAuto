@@ -21,11 +21,9 @@ deux consignes sont contradictoires tant que le malentendu n'est pas levé.
 | **Clerk** pour l'authentification | Absent. Authentification maison : `auth_sessions`, jeton `Bearer`, `password_reset_tokens` | Ne pas « réutiliser Clerk » : il n'y a rien à réutiliser |
 | **Prisma** comme ORM | Absent. SQL écrit à la main sur `pg.Pool` | Pas de `schema.prisma` à inspecter ; les migrations sont du DDL idempotent dans `server/db.ts` |
 | **Next.js** | Absent. **Vite + React Router 7** | `src/app/*/page.tsx` ressemble à Next mais n'en est pas ; pas de rendu serveur, pas de route handlers |
-| **PostgreSQL via Neon** | **PGlite** embarqué, `new PGlite()` **sans `dataDir`** | La base est **en mémoire** : tout disparaît au redémarrage. Acceptable en démonstration, bloquant en production |
+| **PostgreSQL Supabase** | **PGlite** embarqué, `new PGlite()` **sans `dataDir`** | La base est **en mémoire** : tout disparaît au redémarrage. Acceptable en démonstration, bloquant en production |
 
-Un vestige à signaler : la table **`clerk_webhook_events`** existe toujours
-alors que Clerk n'est plus utilisé nulle part. C'est une trace morte qui
-induira en erreur le prochain lecteur.
+Le schéma Supabase initial a été nettoyé des anciennes tables d’authentification fournisseur ; il n’y a pas de webhook d’identité à maintenir.
 
 **Recommandation** : ne pas migrer vers Clerk/Prisma/Next.js. Ces
 remplacements coûteraient plusieurs semaines pour un gain nul sur les
@@ -318,7 +316,7 @@ indépendant** du statut du lavage. Le §7 étape 7 est respecté sur ce point.
 
 | # | Écart |
 |---|---|
-| F1 | Table morte `clerk_webhook_events` |
+| F1 | Les tables d’authentification obsolètes sont exclues de la baseline Supabase |
 | F2 | 7 fichiers encore non migrés sur la brique d'écriture |
 | F3 | 21 avertissements de lint (`react-refresh`) |
 
@@ -446,7 +444,7 @@ Conventions en vigueur à respecter : `node:test` + `assert/strict`,
    aucune valeur par défaut en production.
 3. Supprimer les comptes de démonstration (`demo@`, `gerant@`, `caisse@`,
    `laveur@washpilot.ci`) ou les isoler derrière un drapeau explicite.
-4. Nettoyer la table morte `clerk_webhook_events`.
+4. Le schéma initial Supabase n’inclut plus les tables mortes d’authentification fournisseur.
 5. Vérifier que la surveillance (`request_metrics`, `error_events`) tourne et
    que la console y donne accès.
 6. Tenir la promesse tarifaire : `TARIFS.md` §6 liste ce qui est annoncé mais
@@ -492,7 +490,7 @@ chaque arrêt, **sans le moindre avertissement**.
 - `mkdir recursive` avant ouverture : PGlite ne crée pas les chemins
   imbriqués et échouait en `ENOENT` au premier démarrage.
 - `.data/` ajouté au `.gitignore` (41 Mo).
-- `NEON_DATABASE_URL`, configuration morte, retirée de `.env.example`.
+- `DATABASE_URL`, configuration morte, retirée de `.env.example`.
 
 **Preuve, pas seulement compilation** : lavage `LAV-20261021-D22BD0`
 (12 000 FCFA) créé, serveur arrêté puis relancé, lavage retrouvé intact.

@@ -572,7 +572,6 @@ test("toute table du schéma est utilisée, toute table utilisée existe", async
    */
   const documented = new Map([
     ["customers", "Décision du 21 octobre : on suit le véhicule (plaque), pas la personne. Table conservée pour un usage futur."],
-    ["clerk_webhook_events", "Héritage d'une architecture d'authentification abandonnée ; suppression à planifier."],
   ])
 
   const orphans = [...created].filter((table) => !referenced.has(table) && !documented.has(table))

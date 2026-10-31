@@ -1,0 +1,7 @@
+project_id = "lavauto"
+
+[db]
+major_version = 17
+
+[db.seed]
+enabled = false

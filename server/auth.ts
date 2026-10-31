@@ -3,8 +3,6 @@ import { promisify } from "node:util"
 import type { NextFunction, Request, Response } from "express"
 import type pg from "pg"
 import { getPool } from "./db.ts"
-import { env } from "./env.ts"
-import { NeonAuthVerifier, looksLikeJwt, readNeonAuthConfig } from "./neon-auth.ts"
 import type { Permission } from "./permissions.ts"
 
 const scrypt = promisify(scryptCallback) as (password: string, salt: Buffer, keylen: number) => Promise<Buffer>
@@ -213,141 +211,12 @@ export interface SessionUser {
   status: string
 }
 
-// ---------------------------------------------------------------------------
-// Porte d'entrée Neon Auth (jetons JWT)
-// ---------------------------------------------------------------------------
-
-/**
- * Vérificateur partagé, reconstruit seulement si la configuration change.
- *
- * Le cache de clés du vérificateur doit survivre d'une requête à l'autre :
- * le réinstancier à chaque appel ramènerait un aller-retour vers Neon par
- * requête, et une panne de ce JWKS couperait toute l'application.
- */
-let neonAuthVerifier: NeonAuthVerifier | null = null
-let neonAuthConfigKey = ""
-
-function currentNeonAuthVerifier(): NeonAuthVerifier | null {
-  const config = readNeonAuthConfig({
-    NEON_AUTH_JWKS_URL: env.NEON_AUTH_JWKS_URL,
-    NEON_AUTH_ISSUER: env.NEON_AUTH_ISSUER,
-    NEON_AUTH_AUDIENCE: env.NEON_AUTH_AUDIENCE,
-  })
-  if (!config) return null
-  const key = `${config.jwksUrl}|${config.issuer}|${config.audience ?? ""}`
-  if (!neonAuthVerifier || key !== neonAuthConfigKey) {
-    neonAuthVerifier = new NeonAuthVerifier(config)
-    neonAuthConfigKey = key
-    console.info(`[auth] Jetons Neon Auth acceptés (émetteur ${config.issuer}).`)
-  }
-  return neonAuthVerifier
-}
-
-interface NeonAuthUserRow {
-  user_id: string
-  email: string
-  first_name: string | null
-  last_name: string | null
-  phone: string | null
-  avatar_url: string | null
-  status: string
-  neon_auth_sub: string | null
-}
-
-const SESSION_USER_COLUMNS = `u.id AS user_id, u.email, u.first_name, u.last_name, u.phone,
-   u.avatar_url, u.status, u.neon_auth_sub`
-
-/**
- * Résout une session à partir d'un jeton Neon Auth.
- *
- * Aucune création de compte : le jeton doit correspondre à un utilisateur
- * déjà connu de la station, par `neon_auth_sub` ou — au premier passage — par
- * adresse e-mail vérifiée. Un compte inconnu est refusé exactement comme un
- * mot de passe erroné ; c'est au propriétaire d'inviter la personne depuis
- * l'écran Équipe.
- */
-async function resolveNeonAuthSession(
-  pool: pg.Pool,
-  verifier: NeonAuthVerifier,
-  token: string,
-): Promise<SessionUser | null> {
-  let identity: Awaited<ReturnType<NeonAuthVerifier["verify"]>>
-  try {
-    identity = await verifier.verify(token)
-  } catch (error) {
-    // Jeton expiré, signature invalide, JWKS en panne : dans tous les cas,
-    // pas de session. Le détail reste dans les journaux, jamais au client —
-    // il aiderait à distinguer un jeton volé d'un jeton simplement périmé.
-    if (process.env.NODE_ENV !== "test") {
-      console.warn("[auth] Jeton Neon Auth refusé :", error instanceof Error ? error.message : error)
-    }
-    return null
-  }
-
-  let row: NeonAuthUserRow | undefined
-
-  const bySub = await pool.query(
-    `SELECT ${SESSION_USER_COLUMNS} FROM users u WHERE u.neon_auth_sub = $1 LIMIT 1`,
-    [identity.subject],
-  )
-  row = bySub.rows[0] as NeonAuthUserRow | undefined
-
-  if (!row && identity.email) {
-    const byEmail = await pool.query(
-      `SELECT ${SESSION_USER_COLUMNS} FROM users u WHERE lower(u.email) = lower($1) LIMIT 1`,
-      [identity.email],
-    )
-    const candidate = byEmail.rows[0] as NeonAuthUserRow | undefined
-    if (candidate) {
-      // Le rattachement automatique exige une adresse vérifiée chez Neon :
-      // sinon, s'inscrire chez le fournisseur avec l'adresse d'autrui
-      // suffirait à reprendre son compte.
-      if (!identity.emailVerified) return null
-      // Adresse déjà rattachée à un autre sujet : ce n'est pas une rotation,
-      // c'est une tentative de prise de contrôle.
-      if (candidate.neon_auth_sub && candidate.neon_auth_sub !== identity.subject) return null
-      if (!candidate.neon_auth_sub) {
-        await pool
-          .query("UPDATE users SET neon_auth_sub = $2, updated_at = NOW() WHERE id = $1 AND neon_auth_sub IS NULL", [
-            candidate.user_id,
-            identity.subject,
-          ])
-          .catch(() => {})
-      }
-      row = candidate
-    }
-  }
-
-  if (!row || row.status !== "active") return null
-  // Le jeton vaut session : pas de ligne `auth_sessions`, donc pas de
-  // révocation côté application. Le préfixe évite qu'un identifiant de
-  // session maison soit confondu avec celui-ci (voir la révocation des
-  // autres sessions dans `auth-router.ts`).
-  return {
-    sessionId: `neon-auth:${identity.subject}`,
-    userId: row.user_id,
-    email: row.email,
-    firstName: row.first_name,
-    lastName: row.last_name,
-    phone: row.phone,
-    avatarUrl: row.avatar_url,
-    status: row.status,
-  }
-}
-
 /** Resolve the active user for the request's session cookie, or null. */
 export async function getSessionUser(req: Request): Promise<SessionUser | null> {
   const token = readSessionToken(req)
   if (!token) return null
   const pool = getPool()
   if (!pool) return null
-
-  if (looksLikeJwt(token)) {
-    const verifier = currentNeonAuthVerifier()
-    // JWT sans Neon Auth configuré : ce n'est pas un jeton de session maison
-    // (qui n'a aucun point), donc il n'ouvre rien.
-    return verifier ? resolveNeonAuthSession(pool, verifier, token) : null
-  }
 
   const q = await pool.query(
     `SELECT s.id AS session_id, u.id AS user_id, u.email, u.first_name, u.last_name, u.phone, u.avatar_url, u.status
