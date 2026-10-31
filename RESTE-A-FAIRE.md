@@ -202,8 +202,7 @@ seul le SHA-256 est stocké.
 
 ## 6. Dette et angles morts
 
-- **`clerk_webhook_events`** : table créée, citée nulle part ailleurs.
-  Reliquat d'une authentification Clerk abandonnée. À supprimer.
+- Les colonnes et la table héritées d’un fournisseur d’authentification précédent sont retirées de la baseline Supabase.
 - **Aucun test de rendu de composant.** Les 209 tests couvrent le serveur et
   des contrôles statiques. C'est précisément par là qu'est passé le plantage
   `MenuGroupContext is missing` (commit `dd51140`) : un menu qui ne tombe
@@ -345,7 +344,7 @@ supplantée — sa suppression est une décision à prendre, pas un oubli.
   pas de téléphone, pas de fichier client à tenir. Elle sert à retrouver
   l'historique d'un véhicule qui revient. La table `customers` reste donc vide
   et sans emploi ; `washes.customer_id` n'est plus alimenté.
-- `clerk_webhook_events` : table morte, héritée d'une architecture abandonnée.
+- Les traces de l’ancienne authentification ont été retirées du nouveau schéma Supabase.
 - Deuxième instance impossible (limitation en mémoire, `setInterval`).
 - `wash_quality_events` absente.
 
@@ -578,5 +577,5 @@ première version à l'activation.
   Il vérifie le routage, les cookies et le parcours complet ; il ne dit rien
   des limites de la plateforme (taille du bundle, temps de démarrage à froid,
   région).
-- **Le premier déploiement reste à faire** avec `DATABASE_URL` (Neon) : la
+- **Le premier déploiement reste à faire** avec `DATABASE_URL` (Supabase PostgreSQL) : la
   sonde `/api/healthz` doit répondre `{"status":"ok","database":"ready"}`.

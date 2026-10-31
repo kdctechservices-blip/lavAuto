@@ -4,7 +4,7 @@ import { readFileSync } from "node:fs";
 import { PGlite } from "@electric-sql/pglite";
 import { resolvePgliteLocation, describePgliteLocation } from "./pglite-location.ts";
 import { buildSslConfig, chooseDatabaseTarget, describeConnection } from "./database-target.ts";
-import { bindRlsGuard, probeRlsRole, type RlsPool } from "./db-rls.ts";
+import { bindRlsGuard, isRlsRoleAvailable, probeRlsRole, type RlsPool } from "./db-rls.ts";
 import { env } from "./env.ts";
 import { migrateLegacyPlatformAdmins, syncPlatformOperators } from "./console-auth.ts";
 import { hashPassword } from "./auth.ts";
@@ -260,26 +260,19 @@ END $rls$;`,
  */
 export const schemaSql = `
 CREATE TABLE IF NOT EXISTS users (
- id uuid PRIMARY KEY DEFAULT gen_random_uuid(), clerk_user_id text UNIQUE,
+ id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
  organization_id uuid, email text NOT NULL, first_name text, last_name text, phone text,
  avatar_url text, status text NOT NULL DEFAULT 'active' CHECK (status IN ('active','inactive')),
  password_hash text,
  created_at timestamptz NOT NULL DEFAULT now(), updated_at timestamptz NOT NULL DEFAULT now()
 );
 CREATE TABLE IF NOT EXISTS organizations (
- id uuid PRIMARY KEY DEFAULT gen_random_uuid(), clerk_org_id text UNIQUE,
+ id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
  name text NOT NULL, slug text, onboarding_completed boolean NOT NULL DEFAULT false,
  created_at timestamptz NOT NULL DEFAULT now(), updated_at timestamptz NOT NULL DEFAULT now()
 );
 ALTER TABLE users ADD COLUMN IF NOT EXISTS organization_id uuid;
 ALTER TABLE users ADD COLUMN IF NOT EXISTS platform_admin boolean NOT NULL DEFAULT false;
--- Rattachement a un compte Neon Auth (voir server/neon-auth.ts). Nul tant que
--- l'utilisateur ne s'est jamais connecte avec un jeton du fournisseur ; la
--- connexion par mot de passe continue de fonctionner sans lui. L'index est
--- partiel parce qu'une colonne unique autoriserait un seul compte sans
--- rattachement — c'est-a-dire un seul compte, tout court.
-ALTER TABLE users ADD COLUMN IF NOT EXISTS neon_auth_sub text;
-CREATE UNIQUE INDEX IF NOT EXISTS idx_users_neon_auth_sub ON users(neon_auth_sub) WHERE neon_auth_sub IS NOT NULL;
 CREATE TABLE IF NOT EXISTS plans (
  id uuid PRIMARY KEY DEFAULT gen_random_uuid(), code text NOT NULL UNIQUE, name text NOT NULL,
  max_users integer, max_workers integer, max_sites integer, features jsonb NOT NULL DEFAULT '{}'::jsonb
@@ -1246,9 +1239,6 @@ CREATE UNIQUE INDEX IF NOT EXISTS closure_requests_one_pending
  ON closure_requests(organization_id) WHERE status = 'pending';
 CREATE INDEX IF NOT EXISTS closure_requests_feed_idx
  ON closure_requests(status, created_at DESC);
-CREATE TABLE IF NOT EXISTS clerk_webhook_events (
- id text PRIMARY KEY, event_type text NOT NULL, created_at timestamptz NOT NULL DEFAULT now()
-);
 CREATE TABLE IF NOT EXISTS audit_logs (
  id uuid PRIMARY KEY DEFAULT gen_random_uuid(), organization_id uuid REFERENCES organizations(id),
  actor_user_id uuid REFERENCES users(id), action text NOT NULL, entity_type text NOT NULL, entity_id text,
@@ -1788,8 +1778,23 @@ export async function initDatabaseSchema(): Promise<boolean> {
         idleTimeoutMillis: 30000,
       });
       await externalPool.query("SELECT 1");
-      await externalPool.query(schemaSql);
+      // Le schéma distant est piloté exclusivement par les migrations versionnées
+      // de `supabase/migrations/`. L'API ne modifie jamais la structure en production.
+      const requiredTables = await externalPool.query<{ organizations: string | null; auth_sessions: string | null }>(
+        `SELECT to_regclass('public.organizations')::text AS organizations,
+                to_regclass('public.auth_sessions')::text AS auth_sessions`,
+      );
+      if (!requiredTables.rows[0]?.organizations || !requiredTables.rows[0]?.auth_sessions) {
+        throw new Error(
+          "Schéma Supabase incomplet : appliquez les migrations avec `supabase db push` avant de démarrer l'API.",
+        );
+      }
       await probeRlsRole(externalPool);
+      if (!isRlsRoleAvailable() && env.NODE_ENV === "production") {
+        throw new Error(
+          "Le rôle RLS washpilot_app n'est pas disponible sur Supabase ; démarrage refusé pour protéger l'isolation des organisations.",
+        );
+      }
       await seedServiceCatalog(externalPool.query.bind(externalPool));
       await externalPool.query(SERVICE_ELIGIBILITY_TRANSCRIPTION_SQL);
       await migrateLegacyPlatformAdmins(externalPool.query.bind(externalPool));

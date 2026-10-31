@@ -90,11 +90,10 @@ function parseHostPort(databaseUrl: string): { host: string; port: number | null
 /**
  * Classe l'URL de connexion.
  *
- * Les motifs reconnus sont ceux des hébergeurs réellement utilisés par le
- * produit : Neon (`-pooler.` = PgBouncer en mode transaction) et Supabase
- * (`pooler.supabase.com:6543` en transaction, `:5432` en session). Tout le
- * reste est traité comme une connexion directe, ce qui est le cas par défaut
- * d'un PostgreSQL classique.
+ * La cible distante prise en charge est Supabase PostgreSQL. Son pooler en
+ * mode transaction utilise le port 6543 ; le mode session utilise 5432.
+ * Tout autre hôte PostgreSQL est traité comme une connexion directe, ce qui
+ * couvre le PostgreSQL local de développement.
  */
 export function describeConnection(databaseUrl: string): ConnectionProfile {
   const { host, port } = parseHostPort(databaseUrl)
@@ -119,19 +118,6 @@ export function describeConnection(databaseUrl: string): ConnectionProfile {
     return { mode: "session-pooler", sessionStateSurvives: true, warning: null }
   }
 
-  // Neon : la variante « -pooler » est un PgBouncer en mode transaction.
-  if (/-pooler\./.test(host) && host.endsWith("neon.tech")) {
-    return {
-      mode: "transaction-pooler",
-      sessionStateSurvives: false,
-      warning:
-        "DATABASE_URL vise le pooler Neon (-pooler., mode transaction). " +
-        "L'état de session (SET ROLE, app.current_org) n'y survit pas : l'isolation " +
-        "multi-station devient aléatoire. Retirez « -pooler » de l'hôte pour utiliser " +
-        "la connexion directe.",
-    }
-  }
-
   if (port === 6543) {
     return {
       mode: "transaction-pooler",
@@ -151,12 +137,9 @@ export function describeConnection(databaseUrl: string): ConnectionProfile {
  * Trois cas, et le troisième est celui qui a motivé cette fonction :
  *
  * 1. **Local** — pas de TLS, un PostgreSQL de développement n'en a pas ;
- * 2. **Autorité publique** — vérification stricte, sans réglage (Neon, RDS…) ;
- * 3. **Autorité privée** — Supabase signe ses connexions avec sa propre AC
- *    (`prod-ca-2021.crt`). Sans la fournir, `rejectUnauthorized: true` échoue
- *    sur « self-signed certificate in certificate chain ». On refuse
- *    explicitement de désactiver la vérification : la base transporte des
- *    montants encaissés, pas des brouillons.
+ * 2. **Autorité publique** — vérification stricte, sans réglage.
+ * 3. **Autorité privée** — si Supabase fournit une AC dédiée, elle peut être
+ *    fournie explicitement. On refuse de désactiver la vérification TLS.
  */
 export function buildSslConfig(
   databaseUrl: string,

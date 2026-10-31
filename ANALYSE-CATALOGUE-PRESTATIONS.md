@@ -59,8 +59,8 @@ différenciés (ce que le domaine — berline / SUV / moto — rend très probab
                         └───────────────┬──────────────────────────┘
                                         │ pg (SQL explicite, pas d'ORM)
                                         ▼
-                        PostgreSQL (Neon) ou PGlite embarquée
-                        schéma auto-créé au démarrage (server/db.ts)
+                        PostgreSQL Supabase (migrations versionnées)
+                        PGlite local pour les tests et les mutations hors ligne
 ```
 
 | Couche | Choix | Remarque |

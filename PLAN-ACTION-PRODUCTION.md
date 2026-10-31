@@ -174,7 +174,7 @@ C'est un oracle de validation qui permet de tester des jetons.
 (`set -euo pipefail`, confirmation interactive). Mais rien ne les déclenche, et
 `DEPLOIEMENT.md:187-199` le dit lui-même : « à automatiser **et à tester** ».
 
-**Scénario :** la base Neon est corrompue, ou supprimée par erreur, ou le compte est résilié
+**Scénario :** la base Supabase est corrompue, ou supprimée par erreur, ou le compte est résilié
 faute de paiement. Toute la comptabilité des stations clientes (lavages, encaissements, journal
 d'audit, présences) est **perdue, sans aucune copie**. Un premier essai avec 5 clients payants
 expose déjà leur comptabilité entière à un incident de ce type.
@@ -284,7 +284,7 @@ suite de tests s'y connecte et y écrit : organisations, utilisateurs, lavages, 
 caisse, points de présence — **dans la base de production**.
 
 **Constaté sur ce poste :** le `.env` local (gitignoré, donc invisible dans le dépôt) pointe
-vers `ep-small-dream-…c-7.eu-central-1.aws.neon.tech` — la base Neon de production. Les tests
+vers une base PostgreSQL de production — cette configuration doit maintenant pointer sur Supabase. Les tests
 ne chargent pas `.env` (`dotenv/config` n'est importé que par `server.ts`, jamais par `tests/`),
 donc aujourd'hui ils sont isolés **par accident**, pas par conception. Il suffit qu'un
 développeur exporte `DATABASE_URL` dans son shell, qu'un `dotenvx` soit ajouté, ou qu'un
@@ -331,7 +331,7 @@ un message clair, et n'écrit aucune ligne.
 
 | # | Constat | Emplacement | Correctif |
 |---|---|---|---|
-| **P2-1** | `clerk_webhook_events` : table morte d'un ancien système d'authentification, plus des colonnes `clerk_user_id` / `clerk_org_id` | `server/db.ts:741`, `server/db.ts:58` | Supprimer (migration) |
+| **P2-1** | Anciennes colonnes fournisseur retirées du schéma initial Supabase | `supabase/migrations/20261031000000_initial_schema.sql` | Terminé dans la nouvelle base |
 | **P2-2** | Table `customers` non utilisée et `washes.customer_id` jamais alimenté | `server/db.ts` | Supprimer, ou acter la décision « on suit le véhicule » |
 | **P2-3** | `POST /support/upgrade-request` est une route orpheline — le bouton existe, le résultat est invisible | `server/support.ts:138` | Brancher ou supprimer |
 | **P2-4** | `@electric-sql/pglite` (35 Mo) est une dépendance **de production** alors qu'elle est inatteignable en production | `package.json:20` | `devDependencies` ou `npm prune` ciblé dans le Dockerfile |
@@ -352,7 +352,7 @@ un message clair, et n'écrit aucune ligne.
 | **P2-19** | Le planificateur de relances écrit dans la base même quand la session de caisse n'est pas concernée ; la purge de la file hors-ligne n'existe pas | `server/reminders.ts`, `src/lib/offline-queue.ts` | Purge automatique après N jours + alerte sur file bloquée |
 | **P2-20** | Erreur ESLint 0, mais 21 warnings `react-refresh/only-export-components` | `eslint.config.js` | Ne pas bloquer ; corriger au fil de l'eau |
 | **P2-21** | `index.html` : la balise `apple-mobile-web-app-capable` a été remplacée par `mobile-web-app-capable`. La seconde est la balise standard (Chrome/Android) mais **la première est la balise spécifique à iOS Safari** : le mode « application autonome » (écran d'accueil, sans barre de navigateur) est perdu sur iPhone | `index.html:26` | **Conserver les deux balises** — la standard *et* l'Apple — pour couvrir iOS et Android |
-| **P2-22** | Le `.env` local de ce poste pointe sur la **base Neon de production** (`ep-small-dream-…c-7.eu-central-1.aws.neon.tech`). Toute commande qui charge `dotenv` (`npm run dev`) écrit donc en production | `.env` (gitignoré) | Un `.env.development` pointant sur une base **de développement** séparée, et un `.env.example` qui le documente |
+| **P2-22** | Le `.env` local de ce poste pointe sur la **base Supabase de production** (une URL de base de production (à remplacer par l'URL Supabase de développement)). Toute commande qui charge `dotenv` (`npm run dev`) écrit donc en production | `.env` (gitignoré) | Un `.env.development` pointant sur une base **de développement** séparée, et un `.env.example` qui le documente |
 
 ---
 
@@ -395,7 +395,7 @@ Pour que la prochaine analyse ne reparte pas de zéro sur des points déjà tran
 - **Les tests ne touchent la base de production que par accident** — `.env` n'est pas chargé
   par `tests/` (seul `server.ts` importe `dotenv/config`). C'est une chance, pas une
   conception : P0-10 transforme cette chance en garantie.
-- **Le `.env` local de ce poste pointe sur la base Neon de production** — `npm run dev` y écrit
+- **Le `.env` local de ce poste pointe sur la base Supabase de production** — `npm run dev` y écrit
   dès qu'il démarre. À corriger avant toute manipulation de données de développement.
 
 ---
@@ -443,7 +443,7 @@ Pour que la prochaine analyse ne reparte pas de zéro sur des points déjà tran
 **Avant le premier client**
 
 - [ ] `NODE_ENV=production` défini **explicitement** (pas de défaut) — et le serveur refuse de démarrer sans
-- [ ] `DATABASE_URL` pointant vers PostgreSQL/Neon, `ssl` vérifié, garde-fou PGlite actif
+- [ ] `DATABASE_URL` pointant vers PostgreSQL Supabase, `ssl` vérifié, garde-fou PGlite actif
 - [ ] `APP_URL` défini (https) — vérifié par un test : le lien de reset pointe bien dessus
 - [ ] `RESEND_API_KEY` + `MAIL_FROM` (domaine réel, pas `onboarding@resend.dev`) — **un e-mail de test
       doit être reçu par une vraie adresse**

@@ -1,5 +1,5 @@
 /**
- * Authentification maison (e-mail + mot de passe) adossée à la base Neon.
+ * Authentification applicative (e-mail + mot de passe) adossée à PostgreSQL sur Supabase.
  * La session vit dans un cookie httpOnly géré par le serveur Express ;
  * ce provider interroge /api/v1/auth/me et expose connexion / inscription /
  * déconnexion à toute l'application.

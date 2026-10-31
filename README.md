@@ -11,9 +11,9 @@ rapports d'activité et onboarding guidé. Montants en **F CFA (XOF)**, stockés
 | Frontend | React 19 · Vite · TypeScript · CoreUI (Console) · Tailwind CSS 4 · shadcn/ui · React Router 7 · Recharts |
 | Backend | Express 5 (exécuté via `tsx`), API REST `/api/v1` |
 | Authentification | Maison : e-mail + mot de passe (scrypt), sessions httpOnly stockées dans PostgreSQL |
-| Base de données | PostgreSQL ([Neon](https://neon.tech)) — schéma auto-créé au démarrage |
+| Base de données | PostgreSQL Supabase — migrations versionnées ; PGlite pour tests et mode hors ligne |
 
-Un seul serveur sert l'API **et** la SPA (middleware Vite en développement, `dist/` en production).
+Un seul serveur sert l'API **et** la SPA (middleware Vite en développement, `dist/` en production). Le schéma Supabase est géré par les migrations versionnées de `supabase/migrations/`, jamais par du DDL automatique au démarrage de production.
 
 ## Démarrage rapide
 
@@ -22,7 +22,7 @@ Un seul serveur sert l'API **et** la SPA (middleware Vite en développement, `di
 npm install
 
 # 2. Environnement
-cp .env.example .env     # puis complétez DATABASE_URL
+cp .env.example .env     # DATABASE_URL facultative en local (PGlite)
 
 # 3. Développement (API + frontend sur http://localhost:3000)
 npm run dev
@@ -76,13 +76,24 @@ serveur avant de la lancer si la base est la base embarquée (PGlite), et
 renseigner `SEED_DEMO_DATA=false` pour que la station de démonstration ne
 réapparaisse pas au démarrage suivant.
 
+## Base de données et migrations
+
+- **Production :** Supabase PostgreSQL est la base de vérité ; appliquez les migrations de `supabase/migrations/` avant de déployer l'API. Le serveur vérifie les tables essentielles et refuse de démarrer si le schéma manque.
+- **Développement/tests :** PGlite évite d'exiger un serveur PostgreSQL ; la suite utilise toujours une base mémoire isolée et ignore `DATABASE_URL`.
+- **Hors connexion :** PGlite dans IndexedDB conserve la file locale d'opérations. Elle est envoyée à l'API Supabase au retour du réseau ; les créations concernées sont idempotentes. Supabase reste la vérité distante.
+- La file hors connexion actuelle n'est pas une réplication bidirectionnelle de toutes les tables : elle synchronise des mutations explicitement autorisées et garde les refus définitifs pour résolution.
+
+```bash
+# Avec la CLI Supabase installée et le projet lié
+supabase link --project-ref <project-ref>
+supabase db push
+```
+
 ## Configuration
 
 Variables d'environnement (voir [`.env.example`](.env.example)) :
 
-- `DATABASE_URL` — connexion Neon/PostgreSQL. **Obligatoire en production.**
-  Sur Supabase, utilisez le pooler en **mode session** (port 5432), jamais le
-  mode transaction (6543) : voir [`SUPABASE.md`](SUPABASE.md).
+- `DATABASE_URL` — connexion PostgreSQL du projet Supabase. **Obligatoire en production** ; utilisez la connexion directe ou le pooler en mode session (port 5432), jamais le pooler transaction (6543). Voir [`SUPABASE.md`](SUPABASE.md).
 - `DATABASE_SSL_CA` — autorité de certification à faire confiance quand
   l'hébergeur signe avec sa propre AC (Supabase). Chemin d'un `.crt` ou
   contenu PEM.
@@ -103,14 +114,8 @@ Variables d'environnement (voir [`.env.example`](.env.example)) :
   `RECONCILIATION_STATEMENT_URL` / `RECONCILIATION_STATEMENT_TOKEN` —
   connecteur planifié facultatif de relevé d'agrégateur. L'import CSV/JSON
   manuel dans `/console/rapprochement` fonctionne sans ces variables.
-- `NEON_AUTH_JWKS_URL` / `NEON_AUTH_ISSUER` / `NEON_AUTH_AUDIENCE` — accepte en
-  plus des sessions maison les jetons JWT de Neon Auth (facultatif, voir
-  [`NEON-AUTH.md`](NEON-AUTH.md)). Vide = fonctionnalité éteinte.
 
-> L'authentification ne dépend d'aucun service externe : les comptes (mot de passe
-> haché scrypt) et les sessions (cookies httpOnly, table `auth_sessions`) vivent
-> dans la base PostgreSQL/Neon. Neon Auth, quand il est configuré, ne fait
-> qu'ajouter une porte d'entrée : il ne remplace ni les comptes ni les rôles.
+> Les comptes, mots de passe scrypt et sessions applicatives sont stockés dans PostgreSQL sur Supabase ; l'authentification applicative ne dépend pas d'un fournisseur externe.
 
 > **Mot de passe oublié.** `POST /auth/forgot-password` crée un jeton à usage unique
 > (seul son SHA-256 est stocké dans `password_reset_tokens`) et envoie le lien par
@@ -124,7 +129,7 @@ Variables d'environnement (voir [`.env.example`](.env.example)) :
 server.ts            # Express : sécurité, CORS, montage des routeurs, SPA
 server/
   env.ts             # Validation zod des variables d'environnement
-  db.ts              # Pool pg + schéma SQL idempotent (CREATE/ALTER IF NOT EXISTS)
+  db.ts              # Pool pg ; bootstrap local/test PGlite ; connexion distante en lecture du schéma
   auth.ts            # Hachage scrypt, sessions cookie httpOnly, middleware requireSession
   tenant.ts          # Résolution du tenant (organisation + rôle) de l'utilisateur
   auth-router.ts     # /auth/register, /auth/login, /auth/logout, /auth/me, /auth/profile,
@@ -277,7 +282,7 @@ servir une page.
 
 **Sur Vercel**, l'interface et l'API vivent sur le même domaine : les fonctions
 de `api/` exécutent la même pile Express, la base est un PostgreSQL hébergé
-(Neon), et les relances passent par un cron plutôt que par un minuteur. Tout
+(Supabase PostgreSQL), et les relances passent par un cron plutôt que par un minuteur. Tout
 est décrit au §4 bis de `DEPLOIEMENT.md` ; `npm run smoke:serverless` rejoue le
 parcours complet contre un imitateur du runtime Vercel avant chaque envoi.
 

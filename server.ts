@@ -89,7 +89,7 @@ async function startServer() {
 
   const databaseReady = await initDatabaseSchema()
   if (isProd && !databaseReady) {
-    throw new Error("DATABASE_URL is required in production; refusing to start without Neon.")
+    throw new Error("DATABASE_URL is required in production; refusing to start without Supabase PostgreSQL.")
   }
 
   // Relances d'échéance d'abonnement (J-3, J-1, essai terminé).

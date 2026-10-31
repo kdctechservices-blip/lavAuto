@@ -413,7 +413,6 @@ test("l'export de données couvre toutes les tables métier rattachées à une o
     "support_messages",
     "receipt_issues",
     "audit_logs",
-    "clerk_webhook_events",
     "auth_sessions",
     "password_reset_tokens",
   ])

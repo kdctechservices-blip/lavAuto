@@ -15,7 +15,9 @@
     "console:password": "tsx scripts/console-password.ts",
     "db:purge-stations": "tsx scripts/purge-station-data.ts",
     "smoke": "node scripts/smoke.mjs",
-    "smoke:serverless": "node scripts/build-api.mjs && node scripts/smoke.mjs --serverless --bundle"
+    "smoke:serverless": "node scripts/build-api.mjs && node scripts/smoke.mjs --serverless --bundle",
+    "db:migrate": "supabase db push",
+    "db:migration:new": "supabase migration new"
   },
   "dependencies": {
     "@base-ui/react": "^1.8.0",

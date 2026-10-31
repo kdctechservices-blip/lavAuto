@@ -12,7 +12,7 @@ const schema = z.object({
    * Supabase, par exemple, avec `prod-ca-2021.crt`. Sans elle, `pg` refuse le
    * certificat (« self-signed certificate in certificate chain ») et le
    * serveur bascule sur la base embarquée. Vide : seules les autorités
-   * publiques sont acceptées (Neon, RDS, Cloud SQL…).
+   * publiques sont acceptées (Supabase et autres services PostgreSQL managés).
    */
   DATABASE_SSL_CA: z.string().trim().optional().default(""),
   PG_POOL_MAX: z.coerce.number().int().min(1).max(100).default(10),
@@ -120,21 +120,6 @@ const schema = z.object({
    * ouvert permettrait d'envoyer des e-mails aux clients à volonté.
    */
   CRON_SECRET: z.string().trim().optional().default(""),
-
-  /**
-   * Porte d'entrée Neon Auth (voir `server/neon-auth.ts`).
-   *
-   * `NEON_AUTH_JWKS_URL` est la seule variable indispensable : sans elle, la
-   * vérification de jetons est éteinte et l'application se comporte comme
-   * avant (sessions maison uniquement). L'émetteur est déduit de cette URL
-   * (`https://<endpoint>/neondb/auth/.well-known/jwks.json` →
-   * `https://<endpoint>/neondb/auth`) ; `NEON_AUTH_ISSUER` ne sert qu'à
-   * forcer une autre valeur. `NEON_AUTH_AUDIENCE` contrôle le champ `aud` :
-   * vide, il n'est pas vérifié.
-   */
-  NEON_AUTH_JWKS_URL: z.string().trim().optional().default(""),
-  NEON_AUTH_ISSUER: z.string().trim().optional().default(""),
-  NEON_AUTH_AUDIENCE: z.string().trim().optional().default(""),
 })
 
 const parsed = schema.safeParse(process.env)
