@@ -14,6 +14,7 @@ import {
   getSessionUser,
   hashPassword,
   isPasswordResetTokenValid,
+  needsPasswordRehash,
   readSessionToken,
   setSessionCookie,
   verifyPassword,
@@ -319,9 +320,7 @@ export function createAuthRouter() {
       const row = q.rows[0] as
         | { id: string; password_hash: string | null; status: string }
         | undefined;
-      const valid = row
-        ? await verifyPassword(password, row.password_hash)
-        : false;
+      const valid = await verifyPassword(password, row?.password_hash);
       if (!row || !valid) {
         throw new HttpError(
           401,
@@ -334,6 +333,14 @@ export function createAuthRouter() {
           403,
           "account_disabled",
           "Ce compte a été désactivé. Contactez votre administrateur.",
+        );
+      }
+
+      if (needsPasswordRehash(row.password_hash)) {
+        const upgradedHash = await hashPassword(password);
+        await pool.query(
+          "UPDATE users SET password_hash = $2, updated_at = NOW() WHERE id = $1 AND password_hash = $3",
+          [row.id, upgradedHash, row.password_hash],
         );
       }
 

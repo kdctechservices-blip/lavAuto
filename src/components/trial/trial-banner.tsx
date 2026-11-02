@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { Link } from "react-router"
+import { Link } from "react-router-dom"
 import { ArrowRight, Clock, Lock, X } from "lucide-react"
 import { cn } from "cn"
 import { formatRemaining, useSubscription } from "@/lib/subscription"
@@ -52,7 +52,7 @@ export function TrialBanner({ className }: { className?: string }) {
         <Link
           to="/settings/billing"
           viewTransition
-          className="inline-flex h-9 shrink-0 items-center justify-center gap-1.5 rounded-md bg-destructive px-3 text-sm font-medium text-white transition-transform duration-150 hover:scale-[1.02] active:scale-[0.98]"
+          className="inline-flex h-9 shrink-0 items-center justify-center gap-1.5 rounded-md bg-destructive px-3 text-sm font-medium text-destructive-foreground transition-transform duration-150 hover:scale-[1.02] active:scale-[0.98]"
         >
           Choisir un forfait
           <ArrowRight className="size-4" aria-hidden="true" />

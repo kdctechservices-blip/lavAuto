@@ -3,6 +3,7 @@ import { MotionConfig } from "framer-motion"
 import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "@/components/ui/toast"
 import { RootFallback, RootLayout } from "@/components/router/root-layout"
+import { RouteErrorBoundary } from "@/components/router/route-error-boundary"
 import { routes } from "@/config/routes"
 import { consoleRoutes } from "@/console/routes"
 import { useEffect } from "react"
@@ -32,11 +33,13 @@ const router = createBrowserRouter(
     // -----------------------------------------------------------------------
     {
       path: "/console",
+      errorElement: <RouteErrorBoundary />,
       lazy: async () => ({ Component: (await import("@/console/root")).ConsoleRoot }),
       children: consoleRoutes,
     },
     {
       element: <RootLayout />,
+      errorElement: <RouteErrorBoundary />,
       HydrateFallback: RootFallback,
       children: routes,
     },
@@ -58,7 +61,7 @@ function App() {
       {/* reducedMotion="user" : framer-motion neutralise automatiquement les
           animations si le système demande un mouvement réduit. */}
       <MotionConfig reducedMotion="user">
-        <ThemeProvider defaultTheme="system">
+        <ThemeProvider defaultTheme="light">
           <AuthProvider>
             {/* Droits et forfait montés UNE fois, au-dessus du routeur : chaque
                 page qui lit `useAccess` est une descendante de ces

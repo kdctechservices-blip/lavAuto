@@ -1,5 +1,6 @@
 import test, { before, after } from "node:test"
 import assert from "node:assert/strict"
+import { scryptSync } from "node:crypto"
 import type { Server } from "node:http"
 import type { Pool } from "pg"
 
@@ -66,6 +67,22 @@ before(async () => {
 after(async () => {
   await new Promise<void>((resolve) => server.close(() => resolve()))
   await closeDatabase()
+})
+
+test("la connexion Console migre un hash scrypt après authentification valide", async () => {
+  const salt = Buffer.from("ffeeddccbbaa00998877665544332211", "hex")
+  const legacyHash = `scrypt:${salt.toString("hex")}:${scryptSync(ADMIN_PASSWORD, salt, 64).toString("hex")}`
+  await pool.query("UPDATE platform_operators SET password_hash = $1 WHERE email = $2", [legacyHash, ADMIN_EMAIL])
+
+  const denied = await login(ADMIN_EMAIL, "incorrect")
+  assert.equal(denied.response.status, 401)
+  const unchanged = await pool.query("SELECT password_hash FROM platform_operators WHERE email = $1", [ADMIN_EMAIL])
+  assert.equal(unchanged.rows[0]?.password_hash, legacyHash)
+
+  const session = await login(ADMIN_EMAIL, ADMIN_PASSWORD)
+  assert.equal(session.response.status, 200)
+  const upgraded = await pool.query("SELECT password_hash FROM platform_operators WHERE email = $1", [ADMIN_EMAIL])
+  assert.ok(String(upgraded.rows[0]?.password_hash).startsWith("$argon2id$v=19$"))
 })
 
 test("la session expose le rôle, sans réutiliser une session de station", async () => {

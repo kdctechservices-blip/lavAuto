@@ -1,5 +1,6 @@
 import test, { before, after } from "node:test"
 import assert from "node:assert/strict"
+import { scryptSync } from "node:crypto"
 import type { Server } from "node:http"
 import type { Pool } from "pg"
 import { initDatabaseSchema, getPool, closeDatabase } from "../server/db.ts"
@@ -58,6 +59,12 @@ before(async () => {
   const port = typeof address === "object" && address ? address.port : 0
   baseUrl = `http://127.0.0.1:${port}`
 
+  // Simule une empreinte historique : le premier login doit la migrer sans
+  // demander de réinitialisation du mot de passe.
+  const legacySalt = Buffer.from("11223344556677889900aabbccddeeff", "hex")
+  const legacyHash = `scrypt:${legacySalt.toString("hex")}:${scryptSync(PASSWORD, legacySalt, 64).toString("hex")}`
+  await pool.query("UPDATE users SET password_hash = $1 WHERE email = $2", [legacyHash, "demo@washpilot.ci"])
+
   for (const email of [
     "demo@washpilot.ci", // propriétaire
     "gerant@washpilot.ci", // gérant
@@ -71,6 +78,25 @@ before(async () => {
 after(async () => {
   await new Promise<void>((resolve) => server.close(() => resolve()))
   await closeDatabase()
+})
+
+test("un mauvais mot de passe ne migre pas le hash scrypt, un login valide le migre", async () => {
+  const salt = Buffer.from("11223344556677889900aabbccddeeff", "hex")
+  const legacyHash = `scrypt:${salt.toString("hex")}:${scryptSync(PASSWORD, salt, 64).toString("hex")}`
+  await pool.query("UPDATE users SET password_hash = $1 WHERE email = $2", [legacyHash, "demo@washpilot.ci"])
+
+  const denied = await fetch(`${baseUrl}/api/v1/auth/login`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email: "demo@washpilot.ci", password: "incorrect" }),
+  })
+  assert.equal(denied.status, 401)
+  const unchanged = await pool.query("SELECT password_hash FROM users WHERE email = $1", ["demo@washpilot.ci"])
+  assert.equal(unchanged.rows[0]?.password_hash, legacyHash)
+
+  await login("demo@washpilot.ci")
+  const upgraded = await pool.query("SELECT password_hash FROM users WHERE email = $1", ["demo@washpilot.ci"])
+  assert.ok(String(upgraded.rows[0]?.password_hash).startsWith("$argon2id$v=19$"))
 })
 
 // --- 1. Un utilisateur non connecté ne peut pas appeler l'API --------------

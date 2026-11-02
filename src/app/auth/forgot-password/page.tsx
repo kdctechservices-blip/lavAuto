@@ -69,7 +69,7 @@ export default function ForgotPasswordPage() {
       topAction={
         <Link
           to="/auth/sign-in"
-          className="flex items-center gap-1.5 font-bold text-blue-700 transition-colors hover:text-blue-900"
+          className="flex items-center gap-1.5 font-bold text-primary transition-colors hover:text-primary-hover"
         >
           <ArrowLeft className="size-4" /> Retour à la connexion
         </Link>
@@ -88,7 +88,7 @@ export default function ForgotPasswordPage() {
               </p>
               <a
                 href={result.reset_url}
-                className="block break-all rounded-lg bg-white px-3 py-2 text-xs font-medium text-blue-700 underline underline-offset-2"
+                className="block break-all rounded-lg border border-border bg-card px-3 py-2 text-xs font-medium text-primary underline underline-offset-2"
               >
                 {result.reset_url}
               </a>
@@ -98,7 +98,7 @@ export default function ForgotPasswordPage() {
               </p>
             </div>
           ) : (
-            <p className="text-xs leading-5 text-slate-500">
+            <p className="text-xs leading-5 text-muted-foreground">
               Le lien reste valable une heure et ne peut servir qu'une seule fois. Sans
               e-mail reçu au bout de quelques minutes, vérifiez vos indésirables ou
               réessayez avec une autre adresse.
@@ -111,14 +111,14 @@ export default function ForgotPasswordPage() {
               setResult(null)
               setEmail("")
             }}
-            className="text-xs font-semibold text-blue-700 transition-colors hover:text-blue-900 hover:underline hover:underline-offset-4"
+            className="text-xs font-semibold text-primary transition-colors hover:text-primary-hover hover:underline hover:underline-offset-4"
           >
             Utiliser une autre adresse e-mail
           </button>
 
           <Link
             to="/auth/sign-in"
-            className="flex h-[50px] w-full items-center justify-center gap-2 rounded-xl bg-[#123d79] px-5 text-sm font-bold text-white shadow-lg shadow-blue-900/15 transition hover:bg-[#0d3268]"
+            className="flex h-[50px] w-full items-center justify-center gap-2 rounded-xl bg-primary px-5 text-sm font-bold text-primary-foreground shadow-lg shadow-blue-900/15 transition hover:bg-primary-hover"
           >
             <ArrowLeft className="size-4" /> Revenir à la connexion
           </Link>
@@ -151,11 +151,11 @@ export default function ForgotPasswordPage() {
             />
           </AuthSubmitButton>
 
-          <p className="text-center text-[11px] leading-5 text-slate-400">
+          <p className="text-center text-[11px] leading-5 text-muted-foreground">
             Vous vous souvenez de votre mot de passe ?{" "}
             <Link
               to="/auth/sign-in"
-              className="font-semibold text-blue-700 hover:text-blue-900 hover:underline hover:underline-offset-4"
+              className="font-semibold text-primary hover:text-primary-hover hover:underline hover:underline-offset-4"
             >
               Se connecter
             </Link>

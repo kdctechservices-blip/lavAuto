@@ -24,7 +24,7 @@ type ThemeProviderProps = {
 
 export function ThemeProvider({
   children,
-  defaultTheme = "system",
+  defaultTheme = "light",
   ...props
 }: ThemeProviderProps) {
   // Lu une seule fois : le script inline de `index.html` a déjà posé la bonne

@@ -9,6 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { FormField } from "@lavauto/shared-ui"
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field"
 import { Plus, Trash2 } from "lucide-react"
 import type { WorkerInput, WorkersData } from "@/lib/onboarding-api"
@@ -103,22 +104,18 @@ export function WorkersStep({ progress, onDone, onQuit }: OnboardingWizardProps)
             </div>
           </div>
           <FieldGroup className="grid gap-3 md:grid-cols-2">
-            <Field>
-              <FieldLabel htmlFor={`w-${i}-first`}>Prénom *</FieldLabel>
-              <Input id={`w-${i}-first`} value={w.first_name} onChange={(e) => set(i, "first_name")(e.target.value)} />
-            </Field>
-            <Field>
-              <FieldLabel htmlFor={`w-${i}-last`}>Nom *</FieldLabel>
-              <Input id={`w-${i}-last`} value={w.last_name} onChange={(e) => set(i, "last_name")(e.target.value)} />
-            </Field>
-            <Field>
-              <FieldLabel htmlFor={`w-${i}-phone`}>Téléphone</FieldLabel>
-              <Input id={`w-${i}-phone`} value={w.phone ?? ""} onChange={(e) => set(i, "phone")(e.target.value)} placeholder="+225 …" />
-            </Field>
-            <Field>
-              <FieldLabel htmlFor={`w-${i}-district`}>Quartier d'habitation</FieldLabel>
-              <Input id={`w-${i}-district`} value={w.district ?? ""} onChange={(e) => set(i, "district")(e.target.value)} />
-            </Field>
+            <FormField htmlFor={`w-${i}-first`} label="Prénom" required>
+              <Input value={w.first_name} onChange={(e) => set(i, "first_name")(e.target.value)} />
+            </FormField>
+            <FormField htmlFor={`w-${i}-last`} label="Nom" required>
+              <Input value={w.last_name} onChange={(e) => set(i, "last_name")(e.target.value)} />
+            </FormField>
+            <FormField htmlFor={`w-${i}-phone`} label="Téléphone">
+              <Input value={w.phone ?? ""} onChange={(e) => set(i, "phone")(e.target.value)} placeholder="+225 …" />
+            </FormField>
+            <FormField htmlFor={`w-${i}-district`} label="Quartier d'habitation">
+              <Input value={w.district ?? ""} onChange={(e) => set(i, "district")(e.target.value)} />
+            </FormField>
             <Field>
               <FieldLabel>Fonction</FieldLabel>
               <Select value={w.role} onValueChange={(v) => set(i, "role")(String(v ?? "car_washer"))}>
@@ -133,15 +130,13 @@ export function WorkersStep({ progress, onDone, onQuit }: OnboardingWizardProps)
               </Select>
             </Field>
             {w.role === "custom" && (
-              <Field>
-                <FieldLabel htmlFor={`w-${i}-custom`}>Fonction personnalisée *</FieldLabel>
-                <Input id={`w-${i}-custom`} value={w.custom_role ?? ""} onChange={(e) => set(i, "custom_role")(e.target.value)} />
-              </Field>
+              <FormField htmlFor={`w-${i}-custom`} label="Fonction personnalisée" required>
+                <Input value={w.custom_role ?? ""} onChange={(e) => set(i, "custom_role")(e.target.value)} />
+              </FormField>
             )}
-            <Field>
-              <FieldLabel htmlFor={`w-${i}-joined`}>Date d'entrée (facultatif)</FieldLabel>
-              <Input id={`w-${i}-joined`} type="date" value={w.joined_at ?? ""} onChange={(e) => set(i, "joined_at")(e.target.value)} />
-            </Field>
+            <FormField htmlFor={`w-${i}-joined`} label="Date d'entrée (facultatif)">
+              <Input type="date" value={w.joined_at ?? ""} onChange={(e) => set(i, "joined_at")(e.target.value)} />
+            </FormField>
           </FieldGroup>
         </div>
       ))}

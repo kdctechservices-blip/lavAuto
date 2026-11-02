@@ -3,6 +3,9 @@
   "private": true,
   "version": "2.0.0",
   "type": "module",
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
     "dev": "tsx server.ts",
     "start": "tsx server.ts",
@@ -31,6 +34,8 @@
     "@dnd-kit/utilities": "^3.2.2",
     "@electric-sql/pglite": "^0.5.10",
     "@hookform/resolvers": "^5.9.1",
+    "@lavauto/shared-ui": "0.1.0",
+    "@node-rs/argon2": "^2.2.2",
     "@tailwindcss/vite": "^4.3.3",
     "@tanstack/react-table": "^9.2.6",
     "class-variance-authority": "^0.7.1",

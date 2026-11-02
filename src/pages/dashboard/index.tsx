@@ -504,12 +504,12 @@ export default function DashboardPage() {
                   <AreaChart data={revenueSeries} margin={{ top: 4, right: 8, bottom: 0, left: 0 }}>
                     <defs>
                       <linearGradient id="dashboard-revenue" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#5856d6" stopOpacity={0.35} />
-                        <stop offset="95%" stopColor="#5856d6" stopOpacity={0} />
+                        <stop offset="5%" stopColor="var(--primary)" stopOpacity={0.35} />
+                        <stop offset="95%" stopColor="var(--primary)" stopOpacity={0} />
                       </linearGradient>
                       <linearGradient id="dashboard-expenses" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#e55353" stopOpacity={0.28} />
-                        <stop offset="95%" stopColor="#e55353" stopOpacity={0} />
+                        <stop offset="5%" stopColor="var(--destructive)" stopOpacity={0.28} />
+                        <stop offset="95%" stopColor="var(--destructive)" stopOpacity={0} />
                       </linearGradient>
                     </defs>
                     <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
@@ -533,7 +533,7 @@ export default function DashboardPage() {
                     <Area
                       type="monotone"
                       dataKey="revenue"
-                      stroke="#5856d6"
+                      stroke="var(--primary)"
                       strokeWidth={2}
                       fill="url(#dashboard-revenue)"
                       // Tracé animé au premier affichage seulement : changer de
@@ -546,7 +546,7 @@ export default function DashboardPage() {
                     <Area
                       type="monotone"
                       dataKey="expenses"
-                      stroke="#e55353"
+                      stroke="var(--destructive)"
                       strokeWidth={2}
                       fill="url(#dashboard-expenses)"
                       isAnimationActive={!chartAnimated}

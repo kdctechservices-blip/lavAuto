@@ -37,22 +37,22 @@ export function AuthField({
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between gap-3">
-        <label htmlFor={id} className="text-[13px] font-semibold text-slate-700">
+        <label htmlFor={id} className="text-[13px] font-semibold text-foreground">
           {label}
         </label>
         {labelTrailing}
       </div>
       <div
         className={cn(
-          "group flex h-[50px] items-center gap-3 rounded-xl border bg-white px-3.5 shadow-sm shadow-slate-900/[0.025] transition duration-200 focus-within:border-blue-500 focus-within:ring-4 focus-within:ring-blue-500/10 motion-reduce:transition-none",
-          error ? "border-rose-300" : "border-slate-200 hover:border-slate-300",
-          inputProps.disabled && "cursor-not-allowed bg-slate-50 opacity-70",
+          "group flex h-[50px] items-center gap-3 rounded-xl border border-input bg-card px-3.5 shadow-sm shadow-slate-900/[0.025] transition duration-200 focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/20 motion-reduce:transition-none",
+          error ? "border-destructive" : "hover:border-primary/60",
+          inputProps.disabled && "cursor-not-allowed bg-muted opacity-70",
         )}
       >
         <Icon
           className={cn(
-            "size-[17px] shrink-0 text-slate-400 transition-colors group-focus-within:text-blue-600",
-            error && "text-rose-400",
+            "size-[17px] shrink-0 text-muted-foreground transition-colors group-focus-within:text-primary",
+            error && "text-destructive",
           )}
           aria-hidden="true"
         />
@@ -61,17 +61,17 @@ export function AuthField({
           id={id}
           aria-invalid={error ? true : undefined}
           aria-describedby={describedBy}
-          className="h-full min-w-0 flex-1 bg-transparent text-sm text-slate-800 outline-none placeholder:text-slate-400 disabled:cursor-not-allowed"
+          className="h-full min-w-0 flex-1 bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed"
         />
         {trailing}
       </div>
       {hint ? (
-        <p id={hintId} className="text-[11px] leading-4 text-slate-400">
+        <p id={hintId} className="text-[11px] leading-4 text-muted-foreground">
           {hint}
         </p>
       ) : null}
       {error ? (
-        <p id={errorId} className="text-[11px] leading-4 text-rose-600" role="alert">
+        <p id={errorId} className="text-[11px] leading-4 text-destructive" role="alert">
           {error}
         </p>
       ) : null}
@@ -92,7 +92,7 @@ export function PasswordVisibilityButton({ visible, onToggle, label }: PasswordV
       onClick={onToggle}
       aria-label={`${visible ? "Masquer" : "Afficher"} ${label.toLowerCase()}`}
       aria-pressed={visible}
-      className="grid size-8 shrink-0 place-items-center rounded-lg text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 motion-reduce:transition-none"
+      className="grid size-8 shrink-0 place-items-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary motion-reduce:transition-none"
     >
       {visible ? <EyeOff className="size-4" aria-hidden="true" /> : <Eye className="size-4" aria-hidden="true" />}
     </button>
@@ -108,10 +108,10 @@ export function AuthNotice({ children, tone = "error" }: AuthNoticeProps) {
   const Icon = tone === "success" ? CheckCircle2 : AlertCircle
   const toneClass =
     tone === "success"
-      ? "border-emerald-200 bg-emerald-50 text-emerald-800"
+      ? "border-success/30 bg-success-soft text-success"
       : tone === "info"
-        ? "border-blue-200 bg-blue-50 text-blue-800"
-        : "border-rose-200 bg-rose-50 text-rose-800"
+        ? "border-info/30 bg-info-soft text-info"
+        : "border-destructive/30 bg-destructive/10 text-destructive"
 
   return (
     <div
@@ -145,10 +145,10 @@ export function AuthSubmitButton({
       type="submit"
       disabled={pending || disabled || success}
       aria-busy={pending}
-      className={`group flex h-[50px] w-full items-center justify-center gap-2.5 rounded-xl px-5 text-sm font-bold text-white shadow-lg shadow-blue-900/15 transition duration-200 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-blue-900/20 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-500/25 disabled:translate-y-0 disabled:cursor-not-allowed motion-reduce:transition-none ${
+      className={`group flex h-[50px] w-full items-center justify-center gap-2.5 rounded-xl px-5 text-sm font-bold shadow-lg shadow-blue-900/15 transition duration-200 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-blue-900/20 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/30 disabled:translate-y-0 disabled:cursor-not-allowed motion-reduce:transition-none ${
         success
-          ? "bg-emerald-600 opacity-100 hover:bg-emerald-600"
-          : "bg-[#123d79] hover:bg-[#0d3268] disabled:opacity-60"
+          ? "bg-success text-success-foreground opacity-100 hover:bg-success"
+          : "bg-primary text-primary-foreground hover:bg-primary-hover disabled:opacity-60"
       }`}
     >
       {/* Le libellé change d'état en fondu : attente, puis confirmation. */}

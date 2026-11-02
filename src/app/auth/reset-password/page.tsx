@@ -106,7 +106,7 @@ export default function ResetPasswordPage() {
       topAction={
         <Link
           to="/auth/sign-in"
-          className="flex items-center gap-1.5 font-bold text-blue-700 transition-colors hover:text-blue-900"
+          className="flex items-center gap-1.5 font-bold text-primary transition-colors hover:text-primary-hover"
         >
           <ArrowLeft className="size-4" /> Retour à la connexion
         </Link>
@@ -120,7 +120,7 @@ export default function ResetPasswordPage() {
           </AuthNotice>
           <Link
             to="/auth/sign-in"
-            className="flex h-[50px] w-full items-center justify-center gap-2 rounded-xl bg-[#123d79] px-5 text-sm font-bold text-white shadow-lg shadow-blue-900/15 transition hover:bg-[#0d3268]"
+            className="flex h-[50px] w-full items-center justify-center gap-2 rounded-xl bg-primary px-5 text-sm font-bold text-primary-foreground shadow-lg shadow-blue-900/15 transition hover:bg-primary-hover"
           >
             Se connecter <ArrowRight className="size-4" />
           </Link>
@@ -129,7 +129,7 @@ export default function ResetPasswordPage() {
         <div className="space-y-4" role="status" aria-live="polite">
           <div className="h-[50px] animate-pulse rounded-xl bg-slate-100" />
           <div className="h-[50px] animate-pulse rounded-xl bg-slate-100" />
-          <p className="text-xs text-slate-400">Vérification de votre lien…</p>
+          <p className="text-xs text-muted-foreground">Vérification de votre lien…</p>
         </div>
       ) : tokenState === "invalid" ? (
         <div className="space-y-5">
@@ -139,7 +139,7 @@ export default function ResetPasswordPage() {
           </AuthNotice>
           <Link
             to="/auth/forgot-password"
-            className="flex h-[50px] w-full items-center justify-center gap-2 rounded-xl bg-[#123d79] px-5 text-sm font-bold text-white shadow-lg shadow-blue-900/15 transition hover:bg-[#0d3268]"
+            className="flex h-[50px] w-full items-center justify-center gap-2 rounded-xl bg-primary px-5 text-sm font-bold text-primary-foreground shadow-lg shadow-blue-900/15 transition hover:bg-primary-hover"
           >
             Demander un nouveau lien <ArrowRight className="size-4" />
           </Link>

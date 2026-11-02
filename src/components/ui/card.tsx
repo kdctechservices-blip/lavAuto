@@ -1,15 +1,7 @@
 import * as React from "react"
-import {
-  CCard,
-  CCardBody,
-  CCardFooter,
-  CCardHeader,
-  CCardText,
-  CCardTitle,
-} from "@coreui/react"
-import { cn } from "cn"
+import { cn } from "@/lib/utils"
 
-/** Adaptateur des cartes historiques vers les composants CoreUI. */
+/** Carte partagée : primitive locale compatible avec l'API shadcn du projet. */
 function Card({
   className,
   size = "default",
@@ -20,10 +12,14 @@ function Card({
   interactive?: boolean
 }) {
   return (
-    <CCard
+    <div
       data-slot="card"
       data-size={size}
-      className={cn("group/card text-sm", interactive && "interactive-scale", className)}
+      className={cn(
+        "group/card flex flex-col rounded-xl border bg-card text-card-foreground shadow-sm",
+        interactive && "interactive-scale",
+        className,
+      )}
       {...props}
     />
   )
@@ -31,11 +27,11 @@ function Card({
 
 function CardHeader({ className, ...props }: React.ComponentProps<"div">) {
   return (
-    <CCardHeader
+    <div
       data-slot="card-header"
       className={cn(
-        "group/card-header @container/card-header grid auto-rows-min items-start gap-1 has-data-[slot=card-action]:grid-cols-[1fr_auto] has-data-[slot=card-description]:grid-rows-[auto_auto]",
-        className
+        "group/card-header @container/card-header grid auto-rows-min items-start gap-1 border-b px-4 py-3 has-data-[slot=card-action]:grid-cols-[1fr_auto] has-data-[slot=card-description]:grid-rows-[auto_auto]",
+        className,
       )}
       {...props}
     />
@@ -44,9 +40,9 @@ function CardHeader({ className, ...props }: React.ComponentProps<"div">) {
 
 function CardTitle({ className, ...props }: React.ComponentProps<"div">) {
   return (
-    <CCardTitle
+    <div
       data-slot="card-title"
-      className={cn("mb-0 text-base leading-snug font-medium group-data-[size=sm]/card:text-sm", className)}
+      className={cn("text-base leading-snug font-medium group-data-[size=sm]/card:text-sm", className)}
       {...props}
     />
   )
@@ -54,9 +50,9 @@ function CardTitle({ className, ...props }: React.ComponentProps<"div">) {
 
 function CardDescription({ className, ...props }: React.ComponentProps<"div">) {
   return (
-    <CCardText
+    <div
       data-slot="card-description"
-      className={cn("mb-0 text-sm text-body-secondary", className)}
+      className={cn("text-sm text-muted-foreground", className)}
       {...props}
     />
   )
@@ -73,14 +69,14 @@ function CardAction({ className, ...props }: React.ComponentProps<"div">) {
 }
 
 function CardContent({ className, ...props }: React.ComponentProps<"div">) {
-  return <CCardBody data-slot="card-content" className={className} {...props} />
+  return <div data-slot="card-content" className={cn("p-4", className)} {...props} />
 }
 
 function CardFooter({ className, ...props }: React.ComponentProps<"div">) {
   return (
-    <CCardFooter
+    <div
       data-slot="card-footer"
-      className={cn("flex items-center", className)}
+      className={cn("flex items-center border-t px-4 py-3", className)}
       {...props}
     />
   )
