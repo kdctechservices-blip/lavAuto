@@ -30,3 +30,23 @@ The station app and console are still routes in one React SPA. This package is
 an internal workspace, not a separately deployed application. Add patterns here
 when at least two screens can use the same behavior and accessibility contract;
 keep feature-specific table state and business logic with the consuming screen.
+
+## WashPilot theme tokens
+
+`src/theme.css` is the shared Tailwind v4 palette and semantic light/dark token
+set. The app imports it from `src/index.css`, and consumers can import the
+package export `@lavauto/shared-ui/theme.css`.
+
+- Brand utilities: `bg-brand-500`, `text-brand-700`, etc.
+- Semantic surfaces and text: `bg-bg`, `bg-bg-elevated`, `bg-bg-subtle`,
+  `text-text`, `text-text-muted`, `text-text-subtle`.
+- Primary action: `bg-primary text-primary-foreground`.
+- Accessible orange action: `bg-action-accent text-action-accent-foreground`.
+  The bright `accent-500` is available for decorative use, but white text on it
+  does not meet WCAG AA; use `accent-700` or the semantic action token instead.
+- `bg-accent` remains a neutral interaction surface for shadcn/Base UI menus;
+  it is distinct from the orange `accent-500` palette.
+
+Light is the first-visit default; dark is a user choice, and “Système” remains
+available explicitly. `tests/washpilot-theme.test.ts` checks text/action contrast
+for the chosen light and dark foreground/background pairings.

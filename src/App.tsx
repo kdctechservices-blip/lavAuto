@@ -61,7 +61,7 @@ function App() {
       {/* reducedMotion="user" : framer-motion neutralise automatiquement les
           animations si le système demande un mouvement réduit. */}
       <MotionConfig reducedMotion="user">
-        <ThemeProvider defaultTheme="system">
+        <ThemeProvider defaultTheme="light">
           <AuthProvider>
             {/* Droits et forfait montés UNE fois, au-dessus du routeur : chaque
                 page qui lit `useAccess` est une descendante de ces

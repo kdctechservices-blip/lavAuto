@@ -48,7 +48,7 @@ export function TrialCountdown({ className }: { className?: string }) {
         <Link
           to="/settings/billing"
           viewTransition
-          className="mt-2 flex h-8 items-center justify-center rounded-md bg-destructive px-2 text-[11px] font-medium text-white transition-transform duration-150 hover:scale-[1.02] active:scale-[0.98]"
+          className="mt-2 flex h-8 items-center justify-center rounded-md bg-destructive px-2 text-[11px] font-medium text-destructive-foreground transition-transform duration-150 hover:scale-[1.02] active:scale-[0.98]"
         >
           Choisir un forfait
         </Link>

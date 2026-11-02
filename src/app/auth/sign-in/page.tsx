@@ -88,7 +88,7 @@ export default function SignInPage() {
           <span className="hidden sm:inline">Nouveau sur WashPilot ? </span>
           <Link
             to="/auth/sign-up"
-            className="font-bold text-blue-700 underline decoration-blue-200 underline-offset-4 transition-colors hover:text-blue-900 motion-reduce:transition-none"
+            className="font-bold text-primary underline decoration-brand-200 underline-offset-4 transition-colors hover:text-primary-hover motion-reduce:transition-none"
           >
             Créer un compte
           </Link>
@@ -117,7 +117,7 @@ export default function SignInPage() {
           labelTrailing={
             <Link
               to="/auth/forgot-password"
-              className="text-xs font-semibold text-blue-700 transition-colors hover:text-blue-900 hover:underline hover:underline-offset-4 motion-reduce:transition-none"
+              className="text-xs font-semibold text-primary transition-colors hover:text-primary-hover hover:underline hover:underline-offset-4 motion-reduce:transition-none"
             >
               Mot de passe oublié ?
             </Link>
@@ -140,16 +140,16 @@ export default function SignInPage() {
           }
         />
 
-        <label className="flex cursor-pointer items-start gap-2.5 rounded-lg py-0.5 text-xs text-slate-600">
+        <label className="flex cursor-pointer items-start gap-2.5 rounded-lg py-0.5 text-xs text-muted-foreground">
           <input
             type="checkbox"
             checked={rememberMe}
             onChange={(event) => setRememberMe(event.target.checked)}
-            className="mt-0.5 size-4 rounded border-slate-300 accent-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+            className="mt-0.5 size-4 rounded border-input accent-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
           />
           <span>
-            <span className="block font-semibold text-slate-700">Se souvenir de moi</span>
-            <span className="mt-0.5 block text-[11px] text-slate-400">Garder mon adresse e-mail sur cet appareil</span>
+            <span className="block font-semibold text-foreground">Se souvenir de moi</span>
+            <span className="mt-0.5 block text-[11px] text-muted-foreground">Garder mon adresse e-mail sur cet appareil</span>
           </span>
         </label>
 

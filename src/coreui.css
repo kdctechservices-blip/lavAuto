@@ -1,7 +1,36 @@
 /* Coquille et adaptations WashPilot du thème CoreUI Free React Admin. */
 :root[data-coreui-theme],
 .coreui-app {
-  --radius: 0.375rem;
+  /* CoreUI et les primitives partagées consomment la même palette WashPilot. */
+  --cui-primary: var(--brand-500-current);
+  --cui-primary-rgb: 11, 95, 255;
+  --cui-success: var(--success-color);
+  --cui-success-rgb: 4, 120, 87;
+  --cui-success-bg-subtle: var(--success-soft);
+  --cui-success-text-emphasis: var(--success-color);
+  --cui-danger: var(--danger-color);
+  --cui-danger-rgb: 185, 28, 28;
+  --cui-danger-bg-subtle: var(--danger-soft);
+  --cui-danger-text-emphasis: var(--danger-color);
+  --cui-warning: var(--warning-color);
+  --cui-warning-rgb: 146, 64, 14;
+  --cui-warning-bg-subtle: var(--warning-soft);
+  --cui-warning-text-emphasis: var(--warning-color);
+  --cui-info: var(--info-color);
+  --cui-info-rgb: 14, 116, 144;
+  --cui-info-bg-subtle: var(--info-soft);
+  --cui-info-text-emphasis: var(--info-color);
+  --cui-body-bg: var(--surface-page);
+  --cui-body-color: var(--text-primary);
+  --cui-secondary-color: var(--text-muted);
+  --cui-secondary-bg: var(--surface-subtle);
+  --cui-tertiary-bg: var(--surface-subtle);
+  --cui-border-color: var(--border-color);
+  --cui-input-border-color: var(--input-color);
+  --cui-primary-bg-subtle: var(--primary-soft);
+  --cui-primary-text-emphasis: var(--primary-hover);
+  --cui-primary-border-subtle: var(--ring);
+  --radius: 0.5rem;
   --background: var(--cui-body-bg);
   --foreground: var(--cui-body-color);
   --card: var(--cui-body-bg);
@@ -9,22 +38,18 @@
   --popover: var(--cui-body-bg);
   --popover-foreground: var(--cui-body-color);
   --primary: var(--cui-primary);
-  --primary-foreground: #fff;
   --secondary: var(--cui-secondary-bg);
   --secondary-foreground: var(--cui-body-color);
   --muted: var(--cui-tertiary-bg);
   --muted-foreground: var(--cui-secondary-color);
-  --accent: var(--cui-primary-bg-subtle);
-  --accent-foreground: var(--cui-primary-text-emphasis);
+  --accent: var(--surface-subtle);
+  --accent-foreground: var(--text-primary);
   --destructive: var(--cui-danger);
   --success: var(--cui-success);
-  --success-foreground: #fff;
   --warning: var(--cui-warning);
-  --warning-foreground: #1f2937;
   --info: var(--cui-info);
-  --info-foreground: #fff;
   --border: var(--cui-border-color);
-  --input: var(--cui-border-color);
+  --input: var(--cui-input-border-color);
   --ring: var(--cui-primary);
   --chart-1: var(--cui-primary);
   --chart-2: var(--cui-info);
@@ -32,7 +57,7 @@
   --chart-4: var(--cui-warning);
   --chart-5: var(--cui-danger);
   min-height: 100vh;
-  background: var(--cui-tertiary-bg);
+  background: var(--cui-body-bg);
   color: var(--cui-body-color);
   font-family: var(--cui-font-sans-serif);
   font-size: var(--cui-body-font-size);
@@ -124,7 +149,7 @@
 .coreui-app [data-slot="input"],
 .coreui-app [data-slot="textarea"],
 .coreui-app select {
-  border-color: var(--cui-border-color);
+  border-color: var(--input);
   border-radius: var(--cui-border-radius);
   background-color: var(--cui-body-bg);
   color: var(--cui-body-color);
@@ -134,7 +159,7 @@
 .coreui-app [data-slot="textarea"]:focus-visible,
 .coreui-app select:focus-visible {
   border-color: var(--cui-primary-border-subtle);
-  box-shadow: 0 0 0 0.25rem rgba(88,86,214,0.18);
+  box-shadow: 0 0 0 0.25rem color-mix(in srgb, var(--ring) 22%, transparent);
 }
 .coreui-app [data-slot="badge"] { border-radius: var(--cui-border-radius) !important; }
 
@@ -164,7 +189,12 @@
 }
 :root[data-coreui-theme] [data-slot="select-content"] { box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15); }
 :root[data-coreui-theme] [data-slot="select-item"] { border-radius: var(--cui-border-radius-sm); }
-:root[data-coreui-theme] [data-slot="select-item"]:focus { background: var(--cui-primary); color: #fff; }
+:root[data-coreui-theme] [data-slot="select-item"]:focus { background: var(--primary); color: var(--primary-foreground); }
+.coreui-app .btn-primary { --cui-btn-color: var(--primary-foreground); }
+.coreui-app .btn-success { --cui-btn-color: var(--success-foreground); }
+.coreui-app .btn-warning { --cui-btn-color: var(--warning-foreground); }
+.coreui-app .btn-danger { --cui-btn-color: var(--destructive-foreground); }
+.coreui-app .btn-info { --cui-btn-color: var(--info-foreground); }
 :root[data-coreui-theme] :is([data-slot="sheet-overlay"], [data-slot="drawer-overlay"]) { background: rgba(0,0,0,0.5); backdrop-filter: none; }
 :root[data-coreui-theme] :is([data-slot="sheet-content"], [data-slot="drawer-popup"], [data-slot="dropdown-menu-content"], [data-slot="popover-content"], [data-slot="hover-card-content"]) {
   border: 1px solid var(--cui-border-color);
@@ -207,7 +237,14 @@
 .coreui-console .coreui-content :is(.text-slate-300, .text-slate-400, .text-slate-500, .text-slate-600) { color: var(--cui-secondary-color) !important; }
 
 .coreui-footer { border-top: 1px solid var(--cui-border-color); background: var(--cui-body-bg); font-size: 0.8rem; }
-[data-coreui-theme="dark"] .coreui-app { background: var(--cui-dark-bg-subtle); }
+[data-coreui-theme="dark"] {
+  --cui-primary-rgb: 77, 139, 255;
+  --cui-success-rgb: 52, 211, 153;
+  --cui-danger-rgb: 248, 113, 113;
+  --cui-warning-rgb: 251, 191, 36;
+  --cui-info-rgb: 34, 211, 238;
+}
+[data-coreui-theme="dark"] .coreui-app { background: var(--cui-body-bg); }
 [data-coreui-theme="dark"] .coreui-footer { background: var(--cui-body-bg); }
 
 @media (min-width: 768px) {

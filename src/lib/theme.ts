@@ -29,7 +29,7 @@ export function isTheme(value: unknown): value is Theme {
  * navigateurs, et en contexte sans stockage : un thème ne justifie pas de
  * faire planter l'application, on retombe sur la valeur par défaut.
  */
-export function readStoredTheme(fallback: Theme = "system"): Theme {
+export function readStoredTheme(fallback: Theme = "light"): Theme {
   try {
     const stored = window.localStorage.getItem(THEME_STORAGE_KEY)
     return isTheme(stored) ? stored : fallback
@@ -63,12 +63,12 @@ export function resolveTheme(theme: Theme): ResolvedTheme {
  * Doit rester alignée sur `--background` dans `src/index.css`. Les valeurs
  * sont en hexadécimal : `<meta name="theme-color">` n'accepte pas `oklch()`.
  *
- * Conversion : `oklch(1 0 0)` → #ffffff, `oklch(0.145 0 0)` → #0a0a0a.
- * ⚠️ Également dupliquées dans le script inline de `index.html`.
+ * Les deux teintes WashPilot sont également dupliquées dans le script inline
+ * de `index.html` afin d'éviter un flash avant le premier rendu.
  */
 const THEME_COLOR: Record<ResolvedTheme, string> = {
-  light: "#ffffff",
-  dark: "#0a0a0a",
+  light: "#F8FAFC",
+  dark: "#0B1220",
 }
 
 /**

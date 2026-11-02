@@ -81,7 +81,7 @@ export default function SignUpPage() {
           <span className="hidden sm:inline">Déjà un compte ? </span>
           <Link
             to="/auth/sign-in"
-            className="font-bold text-blue-700 underline decoration-blue-200 underline-offset-4 transition-colors hover:text-blue-900 motion-reduce:transition-none"
+            className="font-bold text-primary underline decoration-brand-200 underline-offset-4 transition-colors hover:text-primary-hover motion-reduce:transition-none"
           >
             Se connecter
           </Link>
@@ -196,7 +196,7 @@ export default function SignUpPage() {
           Créer mon compte <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5 motion-reduce:transition-none" aria-hidden="true" />
         </AuthSubmitButton>
 
-        <p className="text-center text-[11px] leading-5 text-slate-400">
+        <p className="text-center text-[11px] leading-5 text-muted-foreground">
           En créant un compte, vous acceptez nos conditions d’utilisation. Vos données restent la propriété de votre station.
         </p>
       </form>

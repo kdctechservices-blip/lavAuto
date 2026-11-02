@@ -32,15 +32,15 @@ export function AuthPageLayout({
   const year = new Date().getFullYear()
 
   return (
-    <main className="light-surface relative min-h-svh w-full overflow-hidden bg-[#f6f8fc] text-[#102342]">
-      <div className="pointer-events-none absolute -left-40 top-36 size-96 rounded-full bg-blue-100/50 blur-3xl lg:hidden" />
+    <main className="relative min-h-svh w-full overflow-hidden bg-background text-foreground">
+      <div className="pointer-events-none absolute -left-40 top-36 size-96 rounded-full bg-primary-soft/50 blur-3xl lg:hidden" />
       <div className="mx-auto grid min-h-svh w-full max-w-[1720px] grid-cols-1 lg:grid-cols-[minmax(0,1.04fr)_minmax(420px,0.96fr)]">
         <section className="relative z-10 flex min-h-svh flex-col px-5 py-5 sm:px-8 sm:py-7 lg:px-12 lg:py-8 xl:px-16">
           <header className="flex items-center justify-between gap-4">
             <Link
               to="/landing"
               aria-label="WashPilot CI — accueil"
-              className="group flex shrink-0 items-center gap-3 rounded-xl outline-none focus-visible:ring-4 focus-visible:ring-blue-200"
+              className="group flex shrink-0 items-center gap-3 rounded-xl outline-none focus-visible:ring-4 focus-visible:ring-primary/30"
             >
               <BrandMark
                 height={40}
@@ -48,16 +48,16 @@ export function AuthPageLayout({
                 className="transition-transform duration-200 group-hover:-translate-y-0.5 motion-reduce:transition-none"
               />
               <span className="flex flex-col gap-1">
-                <span className="text-[17px] font-extrabold leading-none tracking-[-0.04em] text-[#102342]">
-                  WashPilot <span className="text-blue-600">CI</span>
+                <span className="text-[17px] font-extrabold leading-none tracking-[-0.04em] text-foreground">
+                  WashPilot <span className="text-primary">CI</span>
                 </span>
-                <span className="text-[9px] font-bold uppercase tracking-[0.19em] text-slate-400">
+                <span className="text-[9px] font-bold uppercase tracking-[0.19em] text-muted-foreground">
                   Le pilotage nouvelle génération
                 </span>
               </span>
             </Link>
             {topAction ? (
-              <div className="text-right text-xs leading-5 text-slate-500 sm:text-sm">
+              <div className="text-right text-xs leading-5 text-muted-foreground sm:text-sm">
                 {topAction}
               </div>
             ) : null}
@@ -70,24 +70,24 @@ export function AuthPageLayout({
               transition={{ duration: reduceMotion ? 0 : 0.42, ease: "easeOut" }}
             >
               <div className="mb-7 sm:mb-8">
-                <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-blue-100 bg-white/80 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.16em] text-blue-700 shadow-sm shadow-blue-950/[0.03] sm:text-[11px]">
-                  <span className="size-1.5 rounded-full bg-blue-600" />
+                <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-card/90 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.16em] text-primary shadow-sm sm:text-[11px]">
+                  <span className="size-1.5 rounded-full bg-primary" />
                   {eyebrow}
                 </div>
-                <h1 className="max-w-[13ch] text-[2rem] font-extrabold leading-[1.12] tracking-[-0.045em] text-[#102342] sm:text-[2.5rem]">
+                <h1 className="max-w-[13ch] text-[2rem] font-extrabold leading-[1.12] tracking-[-0.045em] text-foreground sm:text-[2.5rem]">
                   {title}
                 </h1>
-                <p className="mt-3 max-w-[42ch] text-sm leading-6 text-slate-500 sm:text-[15px]">
+                <p className="mt-3 max-w-[42ch] text-sm leading-6 text-muted-foreground sm:text-[15px]">
                   {description}
                 </p>
               </div>
-              <div className="rounded-3xl border border-white/90 bg-white/90 p-4 shadow-[0_18px_55px_rgba(15,35,70,0.08)] backdrop-blur-xl sm:p-6">
+              <div className="rounded-3xl border border-border bg-card/95 p-4 shadow-[0_18px_55px_rgba(15,35,70,0.08)] backdrop-blur-xl sm:p-6">
                 {children}
               </div>
             </motion.div>
           </div>
 
-          <footer className="flex flex-col gap-1 border-t border-slate-200/80 pt-4 text-[10px] leading-5 text-slate-400 sm:flex-row sm:items-center sm:justify-between sm:text-[11px]">
+          <footer className="flex flex-col gap-1 border-t border-border pt-4 text-[10px] leading-5 text-muted-foreground sm:flex-row sm:items-center sm:justify-between sm:text-[11px]">
             <span>© {year} WashPilot CI · Pensé pour les stations ivoiriennes.</span>
             <span>Un espace sécurisé pour votre activité.</span>
           </footer>

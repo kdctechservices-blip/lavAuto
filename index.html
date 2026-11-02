@@ -25,7 +25,7 @@
     <link rel="manifest" href="/manifest.webmanifest" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-title" content="WashPilot" />
-    <meta name="theme-color" content="#ffffff" />
+    <meta name="theme-color" content="#F8FAFC" />
 
     <!--
       Thème appliqué AVANT le premier rendu.
@@ -40,17 +40,16 @@
       (function () {
         try {
           var stored = window.localStorage.getItem("vite-ui-theme")
-          var theme = stored === "light" || stored === "dark" ? stored : null
+          var theme = stored === "light" || stored === "dark" || stored === "system" ? stored : "light"
           var resolved =
-            theme ||
-            (window.matchMedia("(prefers-color-scheme: dark)").matches
-              ? "dark"
-              : "light")
+            theme === "system"
+              ? (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")
+              : theme
           var root = document.documentElement
           root.classList.add(resolved)
           root.style.colorScheme = resolved
           var meta = document.querySelector('meta[name="theme-color"]')
-          if (meta) meta.content = resolved === "dark" ? "#0a0a0a" : "#ffffff"
+          if (meta) meta.content = resolved === "dark" ? "#0B1220" : "#F8FAFC"
         } catch (error) {
           /* Stockage indisponible : on garde le thème clair par défaut. */
         }
