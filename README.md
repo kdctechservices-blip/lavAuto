@@ -10,7 +10,7 @@ rapports d'activité et onboarding guidé. Montants en **F CFA (XOF)**, stockés
 |---|---|
 | Frontend | React 19 · Vite · TypeScript · CoreUI (Console) · Tailwind CSS 4 · shadcn/ui · React Router 7 · Recharts |
 | Backend | Express 5 (exécuté via `tsx`), API REST `/api/v1` |
-| Authentification | Maison : e-mail + mot de passe (scrypt), sessions httpOnly stockées dans PostgreSQL |
+| Authentification | Maison : e-mail + mot de passe (Argon2id, scrypt historique migré au login), sessions httpOnly stockées dans PostgreSQL |
 | Base de données | PostgreSQL Supabase — migrations versionnées ; PGlite pour tests et mode hors ligne |
 
 Un seul serveur sert l'API **et** la SPA (middleware Vite en développement, `dist/` en production). Le schéma Supabase est géré par les migrations versionnées de `supabase/migrations/`, jamais par du DDL automatique au démarrage de production.
@@ -115,7 +115,7 @@ Variables d'environnement (voir [`.env.example`](.env.example)) :
   connecteur planifié facultatif de relevé d'agrégateur. L'import CSV/JSON
   manuel dans `/console/rapprochement` fonctionne sans ces variables.
 
-> Les comptes, mots de passe scrypt et sessions applicatives sont stockés dans PostgreSQL sur Supabase ; l'authentification applicative ne dépend pas d'un fournisseur externe.
+> Les comptes, empreintes Argon2id (et les anciennes empreintes scrypt, migrées lors d'une connexion réussie) et sessions applicatives sont stockés dans PostgreSQL sur Supabase ; l'authentification applicative ne dépend pas d'un fournisseur externe. Les nouveaux mots de passe utilisent Argon2id (`m=19456 KiB`, `t=2`, `p=1`) ; changement et réinitialisation de mot de passe appliquent immédiatement ce format.
 
 > **Mot de passe oublié.** `POST /auth/forgot-password` crée un jeton à usage unique
 > (seul son SHA-256 est stocké dans `password_reset_tokens`) et envoie le lien par
@@ -130,7 +130,7 @@ server.ts            # Express : sécurité, CORS, montage des routeurs, SPA
 server/
   env.ts             # Validation zod des variables d'environnement
   db.ts              # Pool pg ; bootstrap local/test PGlite ; connexion distante en lecture du schéma
-  auth.ts            # Hachage scrypt, sessions cookie httpOnly, middleware requireSession
+  auth.ts            # Hachage Argon2id + vérification/migration scrypt, sessions cookie httpOnly
   tenant.ts          # Résolution du tenant (organisation + rôle) de l'utilisateur
   auth-router.ts     # /auth/register, /auth/login, /auth/logout, /auth/me, /auth/profile,
                      # /auth/password, /auth/forgot-password, /auth/reset-password

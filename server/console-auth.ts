@@ -5,7 +5,7 @@ import type { Pool, PoolClient } from "pg"
 import { z } from "zod"
 
 import { getPool } from "./db.ts"
-import { HttpError, hashPassword, verifyPassword } from "./auth.ts"
+import { HttpError, hashPassword, needsPasswordRehash, verifyPassword } from "./auth.ts"
 import { asyncRoute, body } from "./http.ts"
 import { env } from "./env.ts"
 
@@ -378,7 +378,15 @@ export function createConsoleAuthRouter() {
         return
       }
 
-      const token = await createOperatorSession(pool, row!.id)
+      if (needsPasswordRehash(row.password_hash)) {
+        const upgradedHash = await hashPassword(input.password)
+        await pool.query(
+          "UPDATE platform_operators SET password_hash = $2, updated_at = now() WHERE id = $1::uuid AND password_hash = $3",
+          [row.id, upgradedHash, row.password_hash],
+        )
+      }
+
+      const token = await createOperatorSession(pool, row.id)
       await pool.query("UPDATE platform_operators SET last_login_at = now() WHERE id = $1::uuid", [row!.id])
       setConsoleCookie(req, res, token)
       res.json({
