@@ -1,6 +1,6 @@
 "use client"
 
-import { Link } from "react-router"
+import { Link } from "react-router-dom"
 import { Clock, Lock, Sparkles } from "lucide-react"
 import { cn } from "cn"
 import { splitDuration, useSubscription } from "@/lib/subscription"

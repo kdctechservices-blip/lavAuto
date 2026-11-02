@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { Link } from "react-router"
+import { Link } from "react-router-dom"
 import { ArrowRight, Clock, Lock, X } from "lucide-react"
 import { cn } from "cn"
 import { formatRemaining, useSubscription } from "@/lib/subscription"
