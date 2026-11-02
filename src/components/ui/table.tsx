@@ -1,86 +1,72 @@
-"use client"
-
 import * as React from "react"
-import {
-  CTable,
-  CTableBody,
-  CTableCaption,
-  CTableDataCell,
-  CTableFoot,
-  CTableHead,
-  CTableHeaderCell,
-  CTableRow,
-} from "@coreui/react"
-import { cn } from "cn"
+import { cn } from "@/lib/utils"
 
-/** Table CoreUI avec le même découpage que l'ancienne primitive partagée. */
-function Table({ className, ...props }: React.ComponentProps<typeof CTable>) {
+function Table({ className, ...props }: React.ComponentProps<"table">) {
   return (
     <div data-slot="table-container" className="relative w-full overflow-x-auto">
-      <CTable
-        hover
+      <table
         data-slot="table"
-        className={cn("mb-0 w-full caption-bottom text-sm", className)}
+        className={cn("w-full caption-bottom text-sm", className)}
         {...props}
       />
     </div>
   )
 }
 
-function TableHeader({ className, ...props }: React.ComponentProps<typeof CTableHead>) {
-  return <CTableHead data-slot="table-header" className={cn("[&_tr]:border-b", className)} {...props} />
+function TableHeader({ className, ...props }: React.ComponentProps<"thead">) {
+  return <thead data-slot="table-header" className={cn("[&_tr]:border-b", className)} {...props} />
 }
 
-function TableBody({ className, ...props }: React.ComponentProps<typeof CTableBody>) {
-  return <CTableBody data-slot="table-body" className={cn("[&_tr:last-child]:border-0", className)} {...props} />
+function TableBody({ className, ...props }: React.ComponentProps<"tbody">) {
+  return <tbody data-slot="table-body" className={cn("[&_tr:last-child]:border-0", className)} {...props} />
 }
 
-function TableFooter({ className, ...props }: React.ComponentProps<typeof CTableFoot>) {
+function TableFooter({ className, ...props }: React.ComponentProps<"tfoot">) {
   return (
-    <CTableFoot
+    <tfoot
       data-slot="table-footer"
-      className={cn("border-t font-medium [&>tr]:last:border-b-0", className)}
+      className={cn("border-t bg-muted/50 font-medium [&>tr]:last:border-b-0", className)}
       {...props}
     />
   )
 }
 
-function TableRow({ className, ...props }: React.ComponentProps<typeof CTableRow>) {
+function TableRow({ className, ...props }: React.ComponentProps<"tr">) {
   return (
-    <CTableRow
+    <tr
       data-slot="table-row"
-      className={cn("has-aria-expanded:bg-muted/50 data-[state=selected]:bg-muted", className)}
+      className={cn("border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted", className)}
       {...props}
     />
   )
 }
 
-function TableHead({ className, ...props }: React.ComponentProps<typeof CTableHeaderCell>) {
+function TableHead({ className, ...props }: React.ComponentProps<"th">) {
   return (
-    <CTableHeaderCell
+    <th
       data-slot="table-head"
       scope="col"
-      className={cn("h-10 text-left align-middle whitespace-nowrap [&:has([role=checkbox])]:pr-0", className)}
+      className={cn("h-10 px-2 text-left align-middle font-medium whitespace-nowrap text-muted-foreground [&:has([role=checkbox])]:pr-0", className)}
       {...props}
     />
   )
 }
 
-function TableCell({ className, ...props }: React.ComponentProps<typeof CTableDataCell>) {
+function TableCell({ className, ...props }: React.ComponentProps<"td">) {
   return (
-    <CTableDataCell
+    <td
       data-slot="table-cell"
-      className={cn("align-middle whitespace-nowrap [&:has([role=checkbox])]:pr-0", className)}
+      className={cn("p-2 align-middle whitespace-nowrap [&:has([role=checkbox])]:pr-0", className)}
       {...props}
     />
   )
 }
 
-function TableCaption({ className, ...props }: React.ComponentProps<typeof CTableCaption>) {
+function TableCaption({ className, ...props }: React.ComponentProps<"caption">) {
   return (
-    <CTableCaption
+    <caption
       data-slot="table-caption"
-      className={cn("mt-4 text-sm text-body-secondary", className)}
+      className={cn("mt-4 text-sm text-muted-foreground", className)}
       {...props}
     />
   )
